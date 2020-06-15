@@ -1,0 +1,26 @@
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 90%;
+  max-height: 90%;
+}
+
+.carousel-img {
+  min-width: 1600px;
+  max-height: 1000px;
+}
+
+.login-card {
+  width: 330px;
+  left: 35%;
+  bottom: 400px;
+}
+
+.scale {
+  transition: 1s; /* Время эффекта */
+}
+.scale:hover {
+  transform: scale(1.2); /* Увеличиваем масштаб */
+}
+
+

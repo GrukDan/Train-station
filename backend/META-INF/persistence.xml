@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="persistenceUnit">
+        <class>bsuir.model.taskDetails.Alternative</class>
+        <class>bsuir.model.stationDetails.City</class>
+        <class>bsuir.model.taskDetails.Comment</class>
+        <class>bsuir.model.stationDetails.Country</class>
+        <class>bsuir.model.userDetails.Message</class>
+        <class>bsuir.model.taskDetails.Rating</class>
+        <class>bsuir.model.userDetails.Role</class>
+        <class>bsuir.model.stationDetails.Station</class>
+        <class>bsuir.model.taskDetails.Status</class>
+        <class>bsuir.model.taskDetails.Task</class>
+        <class>bsuir.model.stationDetails.Train</class>
+        <class>bsuir.model.stationDetails.TrainModel</class>
+        <class>bsuir.model.stationDetails.Trip</class>
+        <class>bsuir.model.userDetails.User</class>
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/train_station"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+        </properties>
+    </persistence-unit>
+</persistence>
