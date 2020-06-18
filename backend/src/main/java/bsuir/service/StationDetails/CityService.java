@@ -1,7 +1,6 @@
-package bsuir.service.TripDetails;
+package bsuir.service.StationDetails;
 
 import bsuir.model.stationDetails.City;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -16,4 +15,7 @@ public interface CityService {
     List<City> getAllByCountry(long country);
 
     List<City> getPageSorted(int page, int size, String parameter, boolean direction,String search);
+
+    List<City> getAll();
 }
+

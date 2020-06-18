@@ -11,9 +11,12 @@ import java.util.List;
 
 @Repository
 public interface TripRepository extends JpaRepository<Trip,Long> {
-    List<Trip> findAllByStation(long station);
 
     List<Trip> findAllByTrain(long train);
 
-    Page<Trip> findAllByTrainOrStation(String search, PageRequest of);
+    List<Trip> findAllByArrivalStation(long arrivalStation);
+
+    List<Trip> findAllByDepartureStation(long departureStation);
+
+    List<Trip> findAllByDepartureStationAndArrivalStation(long departureStation, long arrivalStation);
 }

@@ -1,5 +1,6 @@
 package bsuir.service.userDetails;
 
+import bsuir.model.pageModel.UserPage;
 import bsuir.model.userDetails.User;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface UserService {
 
     List<String> getSortParameters();
 
-    List<User> getPageSorted(int page, int size, String parameter, boolean direction, String search);
+    UserPage getPage(int page, int size, boolean direction, String parameter);
 }

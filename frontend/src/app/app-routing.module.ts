@@ -4,6 +4,7 @@ import {WelcomePageComponent} from "./components/welcome-page/welcome-page.compo
 import {Guard} from "./guard/guard.service";
 import {UserTableComponent} from "./components/user-table/user-table.component";
 import {TaskTableComponent} from "./components/task-table/task-table.component";
+import {TrainTableComponent} from "./components/train-table/train-table.component";
 
 
 const routes: Routes = [
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'tasks/table',
     component: TaskTableComponent,
+  },
+  {
+    path: 'trains/table',
+    component: TrainTableComponent,
   },
   {
     path: 'tasks/:id',

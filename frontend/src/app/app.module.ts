@@ -16,6 +16,12 @@ import { UserPageComponent } from './components/user-page/user-page.component';
 import {ModalModule} from "ngx-bootstrap/modal";
 import {PaginationModule} from "ngx-bootstrap/pagination";
 import {HttpClientModule} from "@angular/common/http";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { TrainTableComponent } from './components/train-table/train-table.component';
+import {TooltipModule} from "ngx-bootstrap/tooltip";
+import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {BsDatepickerModule, DatepickerModule} from "ngx-bootstrap/datepicker";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -27,7 +33,8 @@ import {HttpClientModule} from "@angular/common/http";
     CreateTaskModalComponent,
     TaskTableComponent,
     WelcomePageComponent,
-    UserPageComponent
+    UserPageComponent,
+    TrainTableComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +43,14 @@ import {HttpClientModule} from "@angular/common/http";
     CarouselModule.forRoot(),
     ModalModule.forRoot(),
     PaginationModule.forRoot(),
+    TooltipModule.forRoot(),
     HttpClientModule,
+    FormsModule,
+    BsDropdownModule.forRoot(),
+    ReactiveFormsModule,
+    BsDatepickerModule.forRoot(),
+    DatepickerModule.forRoot(),
+    BrowserAnimationsModule
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]

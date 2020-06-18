@@ -1,7 +1,6 @@
-package bsuir.service.TripDetails;
+package bsuir.service.StationDetails;
 
 import bsuir.model.stationDetails.Train;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -9,7 +9,8 @@ import java.util.Objects;
 @Entity
 public class Trip {
     private long idTrip;
-    private long station;
+    private long departureStation;
+    private long arrivalStation;
     private long train;
 
     @Id
@@ -23,16 +24,6 @@ public class Trip {
     }
 
     @Basic
-    @Column(name = "station", nullable = false)
-    public long getStation() {
-        return station;
-    }
-
-    public void setStation(long station) {
-        this.station = station;
-    }
-
-    @Basic
     @Column(name = "train", nullable = false)
     public long getTrain() {
         return train;
@@ -42,18 +33,23 @@ public class Trip {
         this.train = train;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Trip trip = (Trip) o;
-        return idTrip == trip.idTrip &&
-                station == trip.station &&
-                train == trip.train;
+    @Basic
+    @Column(name = "departure_station", nullable = false)
+    public long getDepartureStation() {
+        return departureStation;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idTrip, station, train);
+    public void setDepartureStation(long departureStation) {
+        this.departureStation = departureStation;
+    }
+
+    @Basic
+    @Column(name = "arrival_station", nullable = false)
+    public long getArrivalStation() {
+        return arrivalStation;
+    }
+
+    public void setArrivalStation(long arrivalStation) {
+        this.arrivalStation = arrivalStation;
     }
 }

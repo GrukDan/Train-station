@@ -1,9 +1,8 @@
-package bsuir.service.TripDetails.Impl;
+package bsuir.service.StationDetails.Impl;
 
 import bsuir.model.stationDetails.Train;
-import bsuir.repository.stationDetails.TrainModelRepository;
 import bsuir.repository.stationDetails.TrainRepository;
-import bsuir.service.TripDetails.TrainService;
+import bsuir.service.StationDetails.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

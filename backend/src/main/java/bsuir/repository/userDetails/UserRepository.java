@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User,Long> {
     
     Page<User> findAllByNameOrSurnameOrEmail(String search, PageRequest pageRequest);
-    
+
+    User findByEmailAndPassword(String email, String password);
 }

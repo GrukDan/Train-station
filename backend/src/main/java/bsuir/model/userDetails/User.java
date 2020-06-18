@@ -1,6 +1,7 @@
 package bsuir.model.userDetails;
 
 import bsuir.model.taskDetails.Task;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,7 +14,6 @@ public class User {
     private String name;
     private String surname;
     private String email;
-    private String login;
     private String password;
     private Set<Role> roles;
     private Set<Task> tasks;
@@ -59,16 +59,6 @@ public class User {
     }
 
     @Basic
-    @Column(name = "login", nullable = false, length = 45)
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    @Basic
     @Column(name = "password", nullable = false, length = 45)
     public String getPassword() {
         return password;
@@ -111,13 +101,12 @@ public class User {
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
                 Objects.equals(email, user.email) &&
-                Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser, name, surname, email, login, password);
+        return Objects.hash(idUser, name, surname, email,  password);
     }
 
     public User(){}
@@ -127,7 +116,6 @@ public class User {
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.login = login;
         this.password = password;
     }
 
@@ -137,8 +125,20 @@ public class User {
             this.name = user.name;
             this.surname = user.surname;
             this.email = user.email;
-            this.login = user.login;
             this.password = user.password;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "idUser=" + idUser +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                ", tasks=" + tasks +
+                '}';
     }
 }

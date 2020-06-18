@@ -1,6 +1,7 @@
 package bsuir.controller.userDetails;
 
 
+import bsuir.model.pageModel.UserPage;
 import bsuir.model.userDetails.User;
 import bsuir.service.userDetails.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +57,17 @@ public class UserController {
                 : ResponseEntity.badRequest().body(user);
     }
 
-    @RequestMapping(value = "/get-params", method = RequestMethod.GET)
+    @RequestMapping(value = "/get-parameters", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getSortParameters() {
         return ResponseEntity.ok(userService.getSortParameters());
     }
 
     @RequestMapping(value = "/get-page", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getPageSorted(
+    public ResponseEntity<UserPage> getPageSorted(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("parameter") String parameter,
-            @RequestParam("direction") boolean direction,
-            @RequestParam("search") String search) {
-        return ResponseEntity.ok(userService.getPageSorted(page, size, parameter, direction, search));
+            @RequestParam("direction") boolean direction) {
+        return ResponseEntity.ok(userService.getPage(page, size, direction, parameter));
     }
 }

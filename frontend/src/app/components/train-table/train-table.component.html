@@ -1,0 +1,373 @@
+<div class="container-fluid">
+  <div class="container">
+    <h2 class="my-3">Train routes table</h2>
+    <div class="btn-group justify-content-center justify-content-lg-center"
+         role="group"
+         aria-label="buttons group">
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openCountryModal(newCountry)"
+      >Add country <i class="fa fa-globe"></i>
+      </button>
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openCityModal(newCity)"
+      >Add city <i class="fa fa-building-o"></i>
+      </button>
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openStationModal(newStation)"
+      >Add station <i class="fa fa-university"></i>
+      </button>
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openTrainModelModal(newTrainModel)"
+      >Add train's model
+      </button>
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openTrainModal(newTrain)"
+      >Add train <i class="fa fa-train"></i>
+      </button>
+      <button
+        class="btn btn-primary btn-lg align-content-between"
+        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        placement="bottom"
+        (click)="openTripModal(newTrip)"
+      >Add trip
+      </button>
+    </div>
+    <div *ngIf="tripRecords.length;else noRecords">
+      <table class="table table-hover mt-5">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" class="pointer-cursor">Country</th>
+          <th scope="col" class="pointer-cursor">City</th>
+          <th scope="col" class="pointer-cursor">Station</th>
+          <th scope="col" class="pointer-cursor">Train model</th>
+          <th scope="col" class="pointer-cursor">Train creation date</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let tripRecord of tripRecords, let i = index ">
+          <td><a>{{i + 1}}</a></td>
+          <td><a>{{tripRecord.country.country}}</a></td>
+          <td><a>{{tripRecord.city.city}}</a></td>
+          <td><a>{{tripRecord.station.station}}</a></td>
+          <td><a>{{tripRecord.trainModel.model}}</a></td>
+          <td><a>{{tripRecord.train.dateOfCreation | date}}</a></td>
+          <td>
+            <button class="btn btn-primary">Edit <i class="fa fa-edit"></i></button>
+          </td>
+          <td>
+            <button class="btn btn-danger">Delete trip</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="pagination justify-content-center">
+        <pagination [boundaryLinks]="true"
+                    [totalItems]="77"
+                    (pageChanged)="pageChanged($event.page,direction,parameters[0])"
+                    previousText="&lsaquo;"
+                    nextText="&rsaquo;"
+                    firstText="&laquo;"
+                    lastText="&raquo;">
+        </pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #noRecords>
+  <div class="alert alert-danger h2 my-5" role="alert">
+    no posts created...
+  </div>
+</ng-template>
+
+<ng-template #newCountry>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New country</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="countryInput">Country</label>
+        <input type="text"
+               class="form-control"
+               id="countryInput"
+               name="countryName"
+               [(ngModel)]="country.country">
+        <small class="form-text text-muted">Input name of country</small>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addCountry(country)">Add country</button>
+  </div>
+</ng-template>
+
+<ng-template #newCity>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New city</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="countryForCity" class="mt-3 h5">Country</label>
+        <select class="form-control"
+                id="countryForCity"
+                name="country"
+                #countryForCity
+                [(ngModel)]="city.country">
+          <option *ngFor="let country of countries"
+                  [value]="country.idCountry">{{country.country}}</option>
+        </select>
+        <label for="cityInput" class="mt-3 h5">City</label>
+        <input type="text"
+               class="form-control"
+               id="cityInput"
+               name="cityName"
+               [(ngModel)]="city.city">
+        <small class="form-text text-muted">Input name of city</small>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addCity(city,countryForCity.value)">Add city</button>
+  </div>
+</ng-template>
+
+<ng-template #newStation>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New station</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="countryForStation" class="mt-3 h5">Country</label>
+        <select class="form-control"
+                id="countryForStation"
+                name="country"
+                #countryForStation
+                (change)="loadAllCitiesByCountry(countryForStation.value)">
+          <option *ngFor="let country of countries"
+                  [value]="country.idCountry">{{country.country}}</option>
+        </select>
+        <label for="cityForStation" class="mt-3 h5">City</label>
+        <select class="form-control"
+                id="cityForStation"
+                name="city"
+                #cityForStation
+                [(ngModel)]="station.city">
+          <option *ngFor="let city of cities"
+                  [value]="city.idCity">{{city.city}}</option>
+        </select>
+        <label for="stationInput" class="mt-3 h5">Station</label>
+        <input type="text"
+               class="form-control"
+               id="stationInput"
+               name="stationName"
+               [(ngModel)]="station.station">
+        <small class="form-text text-muted">Input name of station</small>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addStation(station,cityForStation.value)">Add station</button>
+  </div>
+</ng-template>
+
+<ng-template #newTrainModel>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New train model</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="trainModelInput" class="mt-3 h5">Train model</label>
+        <input type="text"
+               class="form-control"
+               id="trainModelInput"
+               name="trainModelName"
+               [(ngModel)]="trainModel.model">
+        <small class="form-text text-muted">Input name of model</small>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addTrainModel(trainModel)">Add model</button>
+  </div>
+</ng-template>
+
+<ng-template #newTrain>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New train</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="trainForm" novalidate>
+      <div class="form-group">
+        <label for="trainModelForTrain" class="mt-3 h5">Train model</label>
+        <select class="form-control"
+                id="trainModelForTrain"
+                name="trainModel"
+                [(ngModel)]="train.model"
+                formControlName="trainModel">
+          <option *ngFor="let model of trainModels"
+                  [value]="model.idTrainModel">{{model.model}}</option>
+        </select>
+        <div class="mt-3">
+          <input type="text"
+                 placeholder="Select train creation date"
+                 class="form-control"
+                 formControlName="dateOfCreation"
+                 [(ngModel)]="train.dateOfCreation"
+                 bsDatepicker>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addTrain(train)">Add train</button>
+  </div>
+</ng-template>
+
+
+<ng-template #newTrip>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New trip</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-6">
+            <h3>Departure station</h3>
+          </div>
+          <div class="col-6">
+            <h3>Arrival station</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="countryForTripOne" class="mt-3 h5">Country</label>
+            <select class="form-control"
+                    id="countryForTripOne"
+                    name="country"
+                    #countryForTripDeparture
+                    (change)="loadAllDepartureCitiesByCountry(countryForTripDeparture.value)">
+              <option *ngFor="let country of countries"
+                      [value]="country.idCountry">{{country.country}}</option>
+            </select>
+            <label for="cityForTripOne" class="mt-3 h5">City</label>
+            <select class="form-control"
+                    id="cityForTripOne"
+                    name="city"
+                    [(ngModel)]="idDepartureCity"
+                    (change)="loadAllDepartureStationsByCity(idDepartureCity)">
+              <option *ngFor="let city of departureCities"
+                      [value]="city.idCity">{{city.city}}</option>
+            </select>
+            <label for="stationForTripOne" class="mt-3 h5">Station</label>
+            <select class="form-control"
+                    id="stationForTripOne"
+                    name="station"
+                    [(ngModel)]="trip.departureStation">
+              <option *ngFor="let station of departureStation"
+                      [value]="station.idStation">{{station.station}}</option>
+            </select>
+          </div>
+          <!--          Two col-->
+          <div class="col-6">
+            <label for="countryForTripTwo" class="mt-3 h5">Country</label>
+            <select class="form-control"
+                    id="countryForTripTwo"
+                    name="country"
+                    #countryForTripArrival
+                    (change)="loadAllArrivalCitiesByCountry(countryForTripArrival.value)">
+              <option *ngFor="let country of countries"
+                      [value]="country.idCountry">{{country.country}}</option>
+            </select>
+            <label for="cityForTripTwo" class="mt-3 h5">City</label>
+            <select class="form-control"
+                    id="cityForTripTwo"
+                    name="city"
+                    [(ngModel)]="idArrivalCity"
+                    (change)="loadAllArrivalStationsByCity(idArrivalCity)">
+              <option *ngFor="let city of arrivalCities"
+                      [value]="city.idCity">{{city.city}}</option>
+            </select>
+            <label for="stationForTripTwo" class="mt-3 h5">Station</label>
+            <select class="form-control"
+                    id="stationForTripTwo"
+                    name="station"
+                    [(ngModel)]="trip.arrivalStation">
+              <option *ngFor="let station of arrivalStation"
+                      [value]="station.idStation">{{station.station}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addTrip(trip)">Add trip</button>
+  </div>
+</ng-template>
+

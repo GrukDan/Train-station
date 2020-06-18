@@ -1,8 +1,8 @@
-package bsuir.service.TripDetails.Impl;
+package bsuir.service.StationDetails.Impl;
 
 import bsuir.model.stationDetails.Country;
 import bsuir.repository.stationDetails.CountryRepository;
-import bsuir.service.TripDetails.CountryService;
+import bsuir.service.StationDetails.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

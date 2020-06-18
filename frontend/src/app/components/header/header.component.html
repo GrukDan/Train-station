@@ -1,14 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <a class="navbar-brand" href="#">Navbar</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="btn nav-item text-white nav-link mr-2" (click)="openModal(newUser)">New user <i class="fa fa-user-plus"></i></a>
+      <a class="btn nav-item text-white nav-link mr-2" (click)="openCreateUserModal(newUser)">New user <i class="fa fa-user-plus"></i></a>
       <a class="btn nav-item text-white nav-link mr-2">New task <i class="fa fa-tag"></i> </a>
       <a class="nav-item text-white nav-link mr-2"  routerLink="users/table">Users table <i class="fa fa-users"></i></a>
       <a class="nav-item text-white nav-link mr-2"  routerLink="tasks/table">Tasks table <i class="fa fa-tasks"></i></a>
+      <a class="nav-item text-white nav-link mr-2"  routerLink="trains/table">Train routes <i class="fa fa-train"></i></a>
     </div>
   </div>
 </nav>
@@ -17,7 +24,7 @@
 <ng-template #newUser>
   <div class="modal-header">
     <h4 class="modal-title pull-left">New user</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalWindowService.closeModal()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -25,40 +32,45 @@
     <form>
       <div class="form-group">
         <label for="nameInput">Name</label>
-        <input type="text" class="form-control" id="nameInput">
+        <input type="text"
+               class="form-control"
+               id="nameInput"
+               name="userName"
+               [(ngModel)]="user.name">
       </div>
       <div class="form-group">
         <label for="surnameInput">Surname</label>
-        <input type="text" class="form-control" id="surnameInput" >
+        <input type="text"
+               class="form-control"
+               id="surnameInput"
+               name="userSurname"
+               [(ngModel)]="user.surname">
       </div>
       <div class="form-group">
         <label for="inputEmail">Email address</label>
-        <input type="email" class="form-control" id="inputEmail">
+        <input type="email"
+               class="form-control"
+               id="inputEmail"
+               name="userEmail"
+               [(ngModel)]="user.email">
       </div>
       <div class="form-group mt-5">
         <div class="input-group">
           <div class="input-group-prepend">
             <label class="input-group-text" for="selectRole">Role</label>
           </div>
-          <select class="custom-select" id="selectRole">
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+          <select class="custom-select"
+                  id="selectRole"
+                  name="userRole"
+                  [(ngModel)]="userRole">
+            <option *ngFor="let role of roles" [value]="role.idRole">{{role.role}}</option>
           </select>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="inputLogin">Login</label>
-        <input type="text" class="form-control" id="inputLogin">
-      </div>
-      <div class="form-group">
-        <label for="inputPassword">Password</label>
-        <input type="password" class="form-control" id="inputPassword">
       </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-secondary">Close</button>
-    <button class="btn btn-success">Add user</button>
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success" (click)="addUser(user,userRole)">Add user</button>
   </div>
 </ng-template>

@@ -1,9 +1,7 @@
 package bsuir.controller.stationDetails;
 
-import bsuir.model.stationDetails.Station;
 import bsuir.model.stationDetails.TrainModel;
-import bsuir.service.TripDetails.StationService;
-import bsuir.service.TripDetails.TrainModelService;
+import bsuir.service.StationDetails.TrainModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/train-model")
+@RequestMapping("/api/train-models")
 public class TrainModelController {
 
     @Autowired

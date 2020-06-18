@@ -1,8 +1,8 @@
-package bsuir.service.TripDetails.Impl;
+package bsuir.service.StationDetails.Impl;
 
 import bsuir.model.stationDetails.City;
 import bsuir.repository.stationDetails.CityRepository;
-import bsuir.service.TripDetails.CityService;
+import bsuir.service.StationDetails.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -34,6 +34,11 @@ public class CityServiceImpl implements CityService {
     @Override
     public List<City> getAllByCountry(long country) {
         return cityRepository.findAllByCountry(country);
+    }
+
+    @Override
+    public List<City> getAll() {
+        return cityRepository.findAll();
     }
 
     @Override

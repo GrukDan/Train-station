@@ -1,6 +1,9 @@
 package bsuir.model.userDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,7 +42,7 @@ public class Role {
                 Objects.equals(role, role1.role);
     }
 
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     public Set<User> getUsers() {
         return users;
@@ -52,5 +55,14 @@ public class Role {
     @Override
     public int hashCode() {
         return Objects.hash(idRole, role);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "idRole=" + idRole +
+                ", role='" + role + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

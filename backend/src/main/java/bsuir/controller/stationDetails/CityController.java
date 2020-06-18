@@ -2,7 +2,7 @@ package bsuir.controller.stationDetails;
 
 
 import bsuir.model.stationDetails.City;
-import bsuir.service.TripDetails.CityService;
+import bsuir.service.StationDetails.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +28,11 @@ public class CityController {
     }
 
     @RequestMapping(value = "/get-all",method = RequestMethod.GET)
+    public ResponseEntity<List<City>> getAll(){
+        return ResponseEntity.ok(cityService.getAll());
+    }
+
+    @RequestMapping(value = "/by-country",method = RequestMethod.GET)
     public ResponseEntity<List<City>> getAllByCountry(@RequestParam("country") long country){
         return ResponseEntity.ok(cityService.getAllByCountry(country));
     }

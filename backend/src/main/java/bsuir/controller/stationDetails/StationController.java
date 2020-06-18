@@ -2,8 +2,7 @@ package bsuir.controller.stationDetails;
 
 
 import bsuir.model.stationDetails.Station;
-import bsuir.service.TripDetails.StationService;
-import bsuir.service.taskDetails.StatusService;
+import bsuir.service.StationDetails.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class StationController {
         return ResponseEntity.ok("deleted");
     }
 
-    @RequestMapping(value = "/get-all",method = RequestMethod.GET)
+    @RequestMapping(value = "/by-city",method = RequestMethod.GET)
     public ResponseEntity<List<Station>> getAllByCity(@RequestParam("city") long city){
         return ResponseEntity.ok(stationService.getAllByCity(city));
     }

@@ -1,8 +1,8 @@
-package bsuir.service.TripDetails.Impl;
+package bsuir.service.StationDetails.Impl;
 
 import bsuir.model.stationDetails.Station;
 import bsuir.repository.stationDetails.StationRepository;
-import bsuir.service.TripDetails.StationService;
+import bsuir.service.StationDetails.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public Station getById(long id) {
-        return null;
+        return stationRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package bsuir.controller.stationDetails;
 
-import bsuir.model.stationDetails.Station;
 import bsuir.model.stationDetails.Train;
-import bsuir.service.TripDetails.StationService;
-import bsuir.service.TripDetails.TrainService;
+import bsuir.service.StationDetails.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
