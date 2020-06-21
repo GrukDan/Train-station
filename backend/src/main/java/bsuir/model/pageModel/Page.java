@@ -3,36 +3,24 @@ package bsuir.model.pageModel;
 public class Page {
     private int page;
     private int size;
-    private long totalPages;
+    private long totalElements;
     private boolean direction;
     private String parameter;
 
-    @Override
-    public String toString() {
-        return "Page{" +
-                "page=" + page +
-                ", size=" + size +
-                ", totalPages=" + totalPages +
-                ", direction=" + direction +
-                ", parameter='" + parameter + '\'' +
-                '}';
-    }
-
-
-    public long getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(long totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public Page(int page, int size, long totalPages, boolean direction, String parameter) {
+    public Page(int page, int size, long totalElements, boolean direction, String parameter) {
         this.page = page;
         this.size = size;
-        this.totalPages = totalPages;
+        this.totalElements = totalElements;
         this.direction = direction;
         this.parameter = parameter;
+    }
+
+    public long getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
     }
 
     public int getPage() {
@@ -70,4 +58,14 @@ public class Page {
     public Page() {
     }
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "page=" + page +
+                ", size=" + size +
+                ", totalElements=" + totalElements +
+                ", direction=" + direction +
+                ", parameter='" + parameter + '\'' +
+                '}';
+    }
 }

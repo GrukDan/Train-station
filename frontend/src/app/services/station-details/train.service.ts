@@ -24,7 +24,7 @@ export class TrainService {
 
   public getAllByModel(model: number): Observable<Train[]> {
     return this.http.get<Train[]>(
-      this.url + '/by-model',
+      this.url + '/get-all/by-model',
       {
         params: new HttpParams()
           .set('model', model.toString())

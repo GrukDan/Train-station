@@ -30,7 +30,7 @@
         tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
         placement="bottom"
         (click)="openTrainModelModal(newTrainModel)"
-      >Add train's model
+      >Add train's model <i class="fa fa-list"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
@@ -44,7 +44,7 @@
         tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
         placement="bottom"
         (click)="openTripModal(newTrip)"
-      >Add trip
+      >Add trip <i class="fa fa-map-marker"></i>
       </button>
     </div>
     <div *ngIf="tripRecords.length;else noRecords">
@@ -119,6 +119,9 @@
                name="countryName"
                [(ngModel)]="country.country">
         <small class="form-text text-muted">Input name of country</small>
+        <div class="alert alert-danger">
+          This country alredy exists
+        </div>
       </div>
     </form>
   </div>
@@ -360,6 +363,32 @@
               <option *ngFor="let station of arrivalStation"
                       [value]="station.idStation">{{station.station}}</option>
             </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label for="trainModelForTrip" class="mt-3 h5">Train model</label>
+              <select class="form-control"
+                      id="trainModelForTrip"
+                      name="trainModel"
+                      [(ngModel)]="train.model"
+                      #trainModelForTrip
+                      (change)="loadAllByTrainModelTrain(trainModelForTrip.value)"
+                      formControlName="trainModel">
+                <option *ngFor="let model of trainModels"
+                        [value]="model.idTrainModel">{{model.model}}</option>
+              </select>
+              <label for="trainForTrip" class="mt-3 h5">Train</label>
+              <select class="form-control"
+                      id="trainForTrip"
+                      name="trainModel"
+                      [(ngModel)]="trip.train"
+                      formControlName="train">
+                <option *ngFor="let train of trains"
+                        [value]="train.idTrain">№{{train.idTrain}} {{train.dateOfCreation | date}}</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>

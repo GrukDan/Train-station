@@ -3,5 +3,5 @@ export class Page {
   size:number;
   direction:boolean;
   parameter:string;
-  totalPages:number;
+  totalElements:number;
 }

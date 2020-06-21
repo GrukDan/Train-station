@@ -3,9 +3,9 @@
     <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameters[0])">Name</th>
-      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameters[1])">Surname</th>
-      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameters[2])">Email</th>
+      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameter)">Name</th>
+      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameter)">Surname</th>
+      <th scope="col" class="pointer-cursor h4" (click)="sort(direction,parameter)">Email</th>
       <th scope="col">Roles</th>
       <th scope="col">Settings <i class="fa fa-gear fa-spin"></i></th>
     </tr>
@@ -18,7 +18,7 @@
       <td>{{user.email}}</td>
       <td>{{getRoles(user.roles)}}</td>
       <td>
-        <button class="btn btn-primary">Edit</button>
+        <button class="btn btn-primary">Edit <i class="fa fa-edit"></i></button>
       </td>
     </tr>
     </tbody>
@@ -26,8 +26,13 @@
 
 
   <div class="pagination justify-content-center">
-    <pagination [boundaryLinks]="true" [totalItems]="77"
-                previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+    <pagination [boundaryLinks]="true"
+                [totalItems]="totalElements"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;"
+                nextText="&rsaquo;"
+                firstText="&laquo;"
+                lastText="&raquo;">
     </pagination>
   </div>
 </div>

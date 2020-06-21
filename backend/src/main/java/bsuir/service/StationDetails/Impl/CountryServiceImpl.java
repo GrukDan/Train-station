@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CountryServiceImpl implements CountryService {
@@ -24,6 +26,11 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public void delete(long id) {
         countryRepository.deleteById(id);
+    }
+
+    @Override
+    public Country findByCountry(String country) {
+        return countryRepository.findByCountry(country).orElse(null);
     }
 
     @Override

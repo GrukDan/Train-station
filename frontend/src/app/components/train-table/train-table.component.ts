@@ -146,6 +146,7 @@ export class TrainTableComponent implements OnInit {
   openTripModal(newTrip: TemplateRef<any>) {
     this.modalWindowService.openModal(newTrip);
     this.loadAllCountries();
+    this.loadAllTrainModel();
   }
 
   openTrainModal(newTrain: TemplateRef<any>) {
@@ -212,5 +213,11 @@ export class TrainTableComponent implements OnInit {
 
   pageChanged(page: number, direction: boolean, parameter) {
     this.loadRecordPage(page, 7, direction, parameter);
+  }
+
+  loadAllByTrainModelTrain(trainModel: any) {
+    this.subscriptions.push(this.trainService.getAllByModel(trainModel).subscribe(trains=>{
+      this.trains = trains as Train[];
+    }))
   }
 }
