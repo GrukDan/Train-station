@@ -17,5 +17,7 @@ public interface CityService {
     List<City> getPageSorted(int page, int size, String parameter, boolean direction,String search);
 
     List<City> getAll();
+
+    List<City> getAllByIdIn(List<Long> ids);
 }
 

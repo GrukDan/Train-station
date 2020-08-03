@@ -1,73 +1,25 @@
 package bsuir.model.viewModel;
 
 import bsuir.model.stationDetails.*;
-
-public class TripRecord {
-    private Country country;
-    private City city;
-    private Station station;
-    private TrainModel trainModel;
-    private Train train;
-    private Trip trip;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
-    @Override
-    public String toString() {
-        return "TripRecord{" +
-                "country=" + country +
-                ", city=" + city +
-                ", station=" + station +
-                ", trainModel=" + trainModel +
-                ", train=" + train +
-                ", trip=" + trip +
-                '}';
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TripRecord extends Trip{
+    private Country departureCountryObj;
+    private Country arrivalCountryObj;
+    private City departureCityObj;
+    private City arrivalCityObj;
+    private Station departureStationObj;
+    private Station arrivalStationObj;
+    private TrainModel trainModelObj;
+    private Train trainObj;
 
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    public Station getStation() {
-        return station;
-    }
-
-    public void setStation(Station station) {
-        this.station = station;
-    }
-
-    public TrainModel getTrainModel() {
-        return trainModel;
-    }
-
-    public void setTrainModel(TrainModel trainModel) {
-        this.trainModel = trainModel;
-    }
-
-    public Train getTrain() {
-        return train;
-    }
-
-    public void setTrain(Train train) {
-        this.train = train;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public void setTrip(Trip trip) {
-        this.trip = trip;
+    public TripRecord(Trip trip){
+        super(trip);
     }
 }

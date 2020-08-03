@@ -1,8 +1,6 @@
 package bsuir.service.taskDetails;
 
-import bsuir.model.taskDetails.Alternative;
 import bsuir.model.taskDetails.Rating;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

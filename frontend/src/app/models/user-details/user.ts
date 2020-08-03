@@ -7,10 +7,10 @@ export class User {
   surname:string;
   email:string;
   roles:Role[];
-  tasks:Task[]
+  tasks:Task[];
 
   constructor() {
-    this.roles = []
-    this.tasks = []
+    this.roles = [];
+    this.tasks = [];
   }
 }

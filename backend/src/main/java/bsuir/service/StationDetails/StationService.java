@@ -15,4 +15,7 @@ public interface StationService {
 
     List<Station> getAllByCity(long city);
 
+    List<Station> getAll();
+
+    List<Station> getAllByIdIn(List<Long> ids);
 }

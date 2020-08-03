@@ -1,0 +1,53 @@
+<div class="card login-card ">
+  <div class="card-header text-dark">
+    <h3>Log in</h3>
+  </div>
+  <div class="card-body text-dark text-left">
+    <form [formGroup]="loginForm" novalidate>
+      <div class="form-group">
+        <label for="email" class="h4">Email:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="email"
+          name="email"
+          formControlName="email"
+          [ngModel]="email"
+          (ngModelChange)="onEmailChange($event)"
+        >
+        <div *ngIf="_email.invalid && (_email.touched || _email.dirty)" class="alert alert-danger">
+          <p *ngIf="_email.errors?.required">This field is required</p>
+          <p *ngIf="_email.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_email.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_email.errors?.pattern">The word had invalid symbols</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password" class="h4">Password:</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          formControlName="password"
+          [ngModel]="password"
+          (ngModelChange)="onPasswordChange($event)"
+        >
+        <div *ngIf="_password.invalid && (_password.touched || _password.dirty)" class="alert alert-danger">
+          <p *ngIf="_password.errors?.required">This field is required</p>
+          <p *ngIf="_password.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_password.errors?.maxlength">The max length isn't valid</p>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <button
+      class="btn btn-primary right-button"
+      [disabled]="loginForm.invalid"
+      (click)="change(true)">
+      Log in
+      <i class="fa fa-sign-in"></i>
+    </button>
+  </div>
+</div>

@@ -15,4 +15,6 @@ public interface TrainService {
     List<Train> getAll();
 
     List<Train> getAllByModel(long model);
+
+    List<Train> getAllByIdIn(List<Long> ids);
 }

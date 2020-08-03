@@ -1,3 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
+@import '../node_modules/angular-tree-component/dist/angular-tree-component.css';
+
+
+input.ng-touched.ng-invalid{
+  border-color: red;
+}
+
+select.ng-touched.ng-invalid{
+  border-color: red;
+}
+
+input.ng-touched.ng-valid{
+  border-color: green;
+}
+
+select.ng-touched.ng-valid{
+  border-color: green;
+}
+
+tbody tr:hover{
+  transition: 1s;
+  transform: scale(1.1);
+}

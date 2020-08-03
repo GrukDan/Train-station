@@ -3,6 +3,7 @@ package bsuir.controller.userDetails;
 
 import bsuir.model.userDetails.Message;
 import bsuir.service.userDetails.MessageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
@@ -19,6 +21,7 @@ public class MessageController {
 
     @RequestMapping(value = "/create", method = RequestMethod.PUT)
     public ResponseEntity<Message> save(@RequestBody Message message) {
+        log.info("PUT request [{URL: " +"/api/messages/create},{body:" + message +"}];");
         Message savedMessage = messageService.save(message);
         return savedMessage != null ?
                 new ResponseEntity<>(savedMessage,
@@ -37,8 +40,9 @@ public class MessageController {
             @RequestParam("direction") boolean direction,
             @RequestParam("sender") long sender,
             @RequestParam("recipient") long recipient) {
-        return ResponseEntity.ok(messageService
-                .getAllBySenderAndRecipientSorted(
+        log.info("GET request [{URL: " +"/api/users/get-page}];");
+        return ResponseEntity.ok(
+                messageService.getAllBySenderAndRecipientSorted(
                         page,
                         size,
                         parameter,

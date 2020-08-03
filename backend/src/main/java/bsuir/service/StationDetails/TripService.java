@@ -2,6 +2,7 @@ package bsuir.service.StationDetails;
 
 import bsuir.model.pageModel.TripPage;
 import bsuir.model.stationDetails.Trip;
+import bsuir.model.viewModel.TripRecord;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public interface TripService {
 
     List<Trip> getAllByTrain(long train);
 
-    TripPage getPageSorted(int page, int size, boolean direction, String parameter);
+    TripPage getPage(int page, int size, boolean direction, String parameter);
 
+    List<TripRecord> getAllTripRecords();
 }

@@ -1,0 +1,13 @@
+.node-content-wrapper::before {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  height: 28px;
+  top: -17px;
+  width: 20px;
+  left: -28px;
+}
+
+.card{
+  height: 500px;
+  overflow: hidden;
+}

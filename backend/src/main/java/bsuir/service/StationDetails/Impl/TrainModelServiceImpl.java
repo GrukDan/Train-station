@@ -33,4 +33,9 @@ public class TrainModelServiceImpl implements TrainModelService {
     public List<TrainModel> getAll() {
         return (List<TrainModel>) trainModelRepository.findAll();
     }
+
+    @Override
+    public List<TrainModel> getAllByIdIn(List<Long> ids) {
+        return trainModelRepository.findAllById(ids);
+    }
 }

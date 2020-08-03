@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {Subscription} from "rxjs";
 import {RoleService} from "../../services/user-details/role.service";
@@ -6,32 +6,67 @@ import {Role} from "../../models/user-details/role";
 import {User} from "../../models/user-details/user";
 import {UserService} from "../../services/user-details/user.service";
 import {ModalWindowService} from "../../services/modal-window/modal-window.service";
+import {Task} from "../../models/task-details/task";
+import {Status} from "../../models/task-details/status";
+import {TaskService} from "../../services/task-details/task.service";
+import {StationService} from "../../services/station-details/station.service";
+import {StatusService} from "../../services/task-details/status.service";
+import {FormGroup} from "@angular/forms";
+import {ValidationService} from "../../services/reactive-forms/validation.service";
+import {TripService} from "../../services/station-details/trip.service";
+import {TripRecord} from "../../models/view-models/trip-record";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+
+  taskForm: FormGroup;
+  userForm: FormGroup;
 
   user: User;
+  task: Task;
+
   userRole: number;
-  roles: Role[];
-  private subscriptions: Subscription[];
+
+  roles: Role[] = [];
+  statuses: Status[] = [];
+  tripRecords:TripRecord[] = [];
+
+  experts:User[] = []
+
+  private subscriptions: Subscription[] = [];
 
   constructor(private roleService: RoleService,
               private userService: UserService,
+              private taskService: TaskService,
+              private statusService: StatusService,
+              private tripService:TripService,
+              private validationService: ValidationService,
               public modalWindowService: ModalWindowService) {
-    this.subscriptions = [];
-    this.createVoidUserForm();
   }
 
   ngOnInit() {
   }
 
+  @HostListener('window:beforeunload')
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
   openCreateUserModal(template: TemplateRef<any>) {
+    this.createVoidUserForm();
     this.modalWindowService.openModal(template);
     this.loadRoles();
+  }
+
+  openCreateTaskModal(template: TemplateRef<any>) {
+    this.createVoidTaskForm();
+    this.modalWindowService.openModal(template);
+    this.loadStatuses();
+    this.loadExperts();
   }
 
   loadRoles() {
@@ -40,16 +75,85 @@ export class HeaderComponent implements OnInit {
     }))
   }
 
-  addUser(user: User, idRole: number) {
-    user.roles.push(this.roles.find(role => role.idRole == idRole));
-    console.log(user)
-    this.subscriptions.push(this.userService.save(user).subscribe())
-    this.createVoidUserForm();
+  loadStatuses() {
+    this.subscriptions.push(this.statusService.getAll().subscribe(statuses => {
+      this.statuses = statuses as Status[];
+    }))
   }
 
-  createVoidUserForm(){
+  addUser(user: User, idRole: number) {
+    user.roles.push(this.roles.find(role => role.idRole == idRole));
+    this.subscriptions.push(this.userService.save(user).subscribe());
+    this.userForm.reset();
+    this.modalWindowService.closeModal();
+  }
+
+  addTask(task: Task) {
+    task.taskCreator = 16;
+    task.dateOfCreation = new Date();
+    this.subscriptions.push(this.taskService.save(task).subscribe());
+    this.taskForm.reset();
+    this.modalWindowService.closeModal();
+  }
+
+  createVoidUserForm() {
+    this.userForm = this.validationService.getUserFormGroup();
     this.user = new User();
     this.roles = [];
     this.userRole = null;
+  }
+
+  createVoidTaskForm() {
+    this.taskForm = this.validationService.getTaskFormGroup();
+    this.taskForm.get('dateOfCreation').clearValidators();
+    this.taskForm.get('taskCreator').clearValidators();
+    this.task = new Task();
+    this.statuses = [];
+  }
+
+  get _userName() {
+    return this.userForm.get('userName');
+  }
+
+  get _userSurname() {
+    return this.userForm.get('userSurname');
+  }
+
+  get _email() {
+    return this.userForm.get('email');
+  }
+
+  get _role() {
+    return this.userForm.get('role');
+  }
+
+  get _taskCreator() {
+    return this.taskForm.get('taskCreator');
+  }
+
+  get _dateOfCreation() {
+    return this.taskForm.get('dateOfCreation');
+  }
+
+  get _taskName() {
+    return this.taskForm.get('taskName');
+  }
+
+  get _description() {
+    return this.taskForm.get('description');
+  }
+
+  get _status() {
+    return this.taskForm.get('status');
+  }
+
+  loadTrips(){
+
+  }
+
+  loadExperts() {
+    this.subscriptions.push(this.userService.getExperts().subscribe(experts=>{
+      this.experts = experts as User[];
+    }))
   }
 }

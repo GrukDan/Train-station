@@ -3,7 +3,6 @@ package bsuir.service.StationDetails;
 import bsuir.model.stationDetails.Country;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface CountryService {
@@ -18,4 +17,6 @@ public interface CountryService {
     List<Country> getAll();
 
     List<Country> getPageSorted(int page, int size, String parameter, boolean direction,String search);
+
+    List<Country> getAllByIdIn(List<Long> ids);
 }

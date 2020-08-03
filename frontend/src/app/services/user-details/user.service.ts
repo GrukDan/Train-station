@@ -12,11 +12,10 @@ export class UserService {
 
   private url: string = '/api/users';
 
-
   constructor(private http: HttpClient) {
   }
 
-  public getPage(page:number = 1,
+  public getPage(page:number = 0,
                  size:number = 5,
                  direction:boolean = false,
                  parameter:string = null):Observable<UserPage>{
@@ -55,5 +54,9 @@ export class UserService {
 
   getParameters():Observable<string[]> {
     return this.http.get<string[]>(this.url + '/get-parameters');
+  }
+
+  getExperts():Observable<User[]> {
+    return this.http.get<User[]>(this.url + '/get-experts');
   }
 }

@@ -22,6 +22,9 @@ import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {BsDatepickerModule, DatepickerModule} from "ngx-bootstrap/datepicker";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { TreeStationComponent } from './components/tree-station/tree-station.component';
+import {TreeModule} from "angular-tree-component";
+import { LoginCardComponent } from './components/login-card/login-card.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     TaskTableComponent,
     WelcomePageComponent,
     UserPageComponent,
-    TrainTableComponent
+    TrainTableComponent,
+    TreeStationComponent,
+    LoginCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +55,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     DatepickerModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    TreeModule.forRoot(),
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]

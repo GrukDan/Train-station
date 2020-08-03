@@ -1,59 +1,30 @@
 package bsuir.model.stationDetails;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
+@Table(name = "city", schema = "train_station")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class City {
-    private long idCity;
-    private String city;
-    private long country;
 
     @Id
     @Column(name = "id_city", nullable = false)
-    public long getIdCity() {
-        return idCity;
-    }
-
-    public void setIdCity(long idCity) {
-        this.idCity = idCity;
-    }
+    @EqualsAndHashCode.Include
+    private long idCity;
 
     @Basic
     @Column(name = "city", nullable = false, length = 45)
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
+    private String city;
 
     @Basic
     @Column(name = "country", nullable = false)
-    public long getCountry() {
-        return country;
-    }
-
-    public void setCountry(long country) {
-        this.country = country;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        City city1 = (City) o;
-        return idCity == city1.idCity &&
-                country == city1.country &&
-                Objects.equals(city, city1.city);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idCity, city, country);
-    }
+    private long country;
 }

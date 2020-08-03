@@ -1,5 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-  <a class="navbar-brand"  routerLink="/">Tr<i class="fa fa-font"></i>in r<i class="fa fa-cog fa-spin"></i>utes</a>
+  <a class="navbar-brand"
+     routerLink="/">Tr<i class="fa fa-font"></i>in r<i class="fa fa-cog fa-spin"></i>utes
+  </a>
   <button class="navbar-toggler"
           type="button"
           data-toggle="collapse"
@@ -11,11 +13,23 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="btn nav-item text-white nav-link mr-2" (click)="openCreateUserModal(newUser)">New user <i class="fa fa-user-plus"></i></a>
-      <a class="btn nav-item text-white nav-link mr-2">New task <i class="fa fa-tag"></i> </a>
-      <a class="nav-item text-white nav-link mr-2"  routerLink="users/table">Users table <i class="fa fa-users"></i></a>
-      <a class="nav-item text-white nav-link mr-2"  routerLink="tasks/table">Tasks table <i class="fa fa-tasks"></i></a>
-      <a class="nav-item text-white nav-link mr-2"  routerLink="trains/table">Train routes <i class="fa fa-train"></i></a>
+      <a class="btn nav-item text-white nav-link mr-2"
+         (click)="openCreateUserModal(newUser)">New user
+        <i class="fa fa-user-plus"></i>
+      </a>
+      <a class="btn nav-item text-white nav-link mr-2"
+         (click)="openCreateTaskModal(newTask)">New task
+        <i class="fa fa-tag"></i>
+      </a>
+      <a class="nav-item text-white nav-link mr-2"
+         routerLink="users/table">Users table <i class="fa fa-users"></i>
+      </a>
+      <a class="nav-item text-white nav-link mr-2"
+         routerLink="tasks/table">Tasks table <i class="fa fa-tasks"></i>
+      </a>
+      <a class="nav-item text-white nav-link mr-2"
+         routerLink="trains/table">Train routes <i class="fa fa-train"></i>
+      </a>
     </div>
   </div>
 </nav>
@@ -29,14 +43,21 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="userForm" novalidate>
       <div class="form-group">
         <label for="nameInput">Name</label>
         <input type="text"
                class="form-control"
                id="nameInput"
                name="userName"
+               formControlName="userName"
                [(ngModel)]="user.name">
+        <div *ngIf="_userName.invalid && (_userName.touched || _userName.dirty)" class="alert alert-danger">
+          <p *ngIf="_userName.errors?.required">This field is required</p>
+          <p *ngIf="_userName.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_userName.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_userName.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="surnameInput">Surname</label>
@@ -44,7 +65,14 @@
                class="form-control"
                id="surnameInput"
                name="userSurname"
+               formControlName="userSurname"
                [(ngModel)]="user.surname">
+        <div *ngIf="_userSurname.invalid && (_userSurname.touched || _userSurname.dirty)" class="alert alert-danger">
+          <p *ngIf="_userSurname.errors?.required">This field is required</p>
+          <p *ngIf="_userSurname.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_userSurname.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_userSurname.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="inputEmail">Email address</label>
@@ -52,7 +80,13 @@
                class="form-control"
                id="inputEmail"
                name="userEmail"
+               formControlName="email"
                [(ngModel)]="user.email">
+        <div *ngIf="_email.invalid && (_email.touched || _email.dirty)" class="alert alert-danger">
+          <p *ngIf="_email.errors?.required">This field is required</p>
+          <p *ngIf="_email.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_email.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
       <div class="form-group mt-5">
         <div class="input-group">
@@ -62,15 +96,104 @@
           <select class="custom-select"
                   id="selectRole"
                   name="userRole"
+                  formControlName="role"
                   [(ngModel)]="userRole">
             <option *ngFor="let role of roles" [value]="role.idRole">{{role.role}}</option>
           </select>
+        </div>
+        <div *ngIf="_role.invalid && (_role.touched || _role.dirty)" class="alert alert-danger">
+          <p *ngIf="_role.errors?.required">This field is required</p>
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addUser(user,userRole)">Add user</button>
+    <button
+      class="btn btn-secondary"
+      (click)="modalWindowService.closeModal()">
+      Close
+    </button>
+    <button
+      class="btn btn-success"
+      [disabled]="userForm.invalid"
+      (click)="addUser(user,userRole)">
+      Add user
+    </button>
+  </div>
+</ng-template>
+
+
+<ng-template #newTask>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New task</h4>
+    <button type="button"
+            class="close pull-right"
+            aria-label="Close"
+            (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="taskForm" novalidate>
+      <div class="form-group">
+        <label for="taskName">Task name</label>
+        <input type="text"
+               class="form-control"
+               id="taskName"
+               name="taskName"
+               formControlName="taskName"
+               [(ngModel)]="task.taskName">
+        <div *ngIf="_taskName.invalid && (_taskName.touched || _taskName.dirty)" class="alert alert-danger">
+          <p *ngIf="_taskName.errors?.required">This field is required</p>
+          <p *ngIf="_taskName.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_taskName.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_taskName.errors?.pattern">The word had invalid symbols</p>
+        </div>
+      </div>
+      <div class="form-group mt-5">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="selectStatus">Status</label>
+          </div>
+          <select class="custom-select"
+                  id="selectStatus"
+                  name="selectStatus"
+                  formControlName="status"
+                  [(ngModel)]="task.status">
+            <option *ngFor="let status of statuses" [value]="status.idStatus">{{status.status}}</option>
+          </select>
+        </div>
+        <div *ngIf="_status.invalid && (_status.touched || _status.dirty)" class="alert alert-danger">
+          <p *ngIf="_status.errors?.required">This field is required</p>
+        </div>
+      </div>
+      <div class="form-group mt-5">
+        <label for="description">Description</label>
+        <textarea class="form-control"
+                  id="description"
+                  rows="3"
+                  formControlName="description"
+                  [(ngModel)]="task.description"
+        >
+        </textarea>
+        <small class="form-text text-muted">Input here description of task</small>
+        <div *ngIf="_description.invalid && (_description.touched || _description.dirty)" class="alert alert-danger">
+          <p *ngIf="_description.errors?.maxlength">The max length isn't valid</p>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-secondary"
+      (click)="modalWindowService.closeModal()">
+      Close
+    </button>
+    <button
+      class="btn btn-success"
+      [disabled]="taskForm.invalid"
+      (click)="addTask(task)">
+      Add task
+    </button>
   </div>
 </ng-template>

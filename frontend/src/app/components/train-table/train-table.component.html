@@ -1,86 +1,113 @@
 <div class="container-fluid">
   <div class="container">
     <h2 class="my-3">Train routes table</h2>
-    <div class="btn-group justify-content-center justify-content-lg-center"
+    <div class="btn-group"
          role="group"
          aria-label="buttons group">
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add the new country."
         placement="bottom"
         (click)="openCountryModal(newCountry)"
       >Add country <i class="fa fa-globe"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add the new city of selected country."
         placement="bottom"
         (click)="openCityModal(newCity)"
       >Add city <i class="fa fa-building-o"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add the new station of selected city."
         placement="bottom"
         (click)="openStationModal(newStation)"
       >Add station <i class="fa fa-university"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add model of trains'."
         placement="bottom"
         (click)="openTrainModelModal(newTrainModel)"
       >Add train's model <i class="fa fa-list"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add the new train."
         placement="bottom"
         (click)="openTrainModal(newTrain)"
       >Add train <i class="fa fa-train"></i>
       </button>
       <button
         class="btn btn-primary btn-lg align-content-between"
-        tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+        tooltip="Add the new trip."
         placement="bottom"
         (click)="openTripModal(newTrip)"
       >Add trip <i class="fa fa-map-marker"></i>
       </button>
     </div>
+
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="mt-5">
+          <app-tree-station
+            header="List of stations"
+            [nodes] = "buildStationNodes()">
+          </app-tree-station>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="mt-5">
+          <app-tree-station
+            header="List of trains"
+            [nodes] = "buildTrainNodes()">
+          </app-tree-station>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="tripRecords.length;else noRecords">
-      <table class="table table-hover mt-5">
+      <h2 class="mt-5">Trips</h2>
+      <table class="table table-hover">
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col" class="pointer-cursor">Country</th>
-          <th scope="col" class="pointer-cursor">City</th>
-          <th scope="col" class="pointer-cursor">Station</th>
-          <th scope="col" class="pointer-cursor">Train model</th>
-          <th scope="col" class="pointer-cursor">Train creation date</th>
+          <th scope="col" class="pointer-cursor">Departure place</th>
+          <th scope="col" class="pointer-cursor">Arrival place</th>
+          <th scope="col" class="pointer-cursor">Train</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let tripRecord of tripRecords, let i = index ">
+        <tr *ngFor="let tripRecord of tripRecords, let i = index " class="font-weight-bold">
           <td><a>{{i + 1}}</a></td>
-          <td><a>{{tripRecord.country.country}}</a></td>
-          <td><a>{{tripRecord.city.city}}</a></td>
-          <td><a>{{tripRecord.station.station}}</a></td>
-          <td><a>{{tripRecord.trainModel.model}}</a></td>
-          <td><a>{{tripRecord.train.dateOfCreation | date}}</a></td>
           <td>
-            <button class="btn btn-primary">Edit <i class="fa fa-edit"></i></button>
+            <a>{{tripRecord.departureCountryObj.country}}
+            /{{tripRecord.departureCityObj.city}}
+            /{{tripRecord.departureStationObj.station}}
+            </a>
           </td>
           <td>
-            <button class="btn btn-danger">Delete trip</button>
+            <a>{{tripRecord.arrivalCountryObj.country}}
+              /{{tripRecord.arrivalCityObj.city}}
+              /{{tripRecord.arrivalStationObj.station}}
+            </a>
+          </td>
+          <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}} of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
+          <td>
+            <button class="btn btn-primary">Edit trip<i class="fa fa-edit"></i></button>
+          </td>
+          <td>
+            <button class="btn btn-danger">Delete trip <i class="fa fa-trash-o"></i></button>
           </td>
         </tr>
         </tbody>
       </table>
       <div class="pagination justify-content-center">
         <pagination [boundaryLinks]="true"
-                    [totalItems]="77"
+                    [totalItems]="totalElements"
                     (pageChanged)="pageChanged($event.page,direction,parameters[0])"
                     previousText="&lsaquo;"
                     nextText="&rsaquo;"
@@ -110,24 +137,33 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="countryForm" novalidate>
       <div class="form-group">
         <label for="countryInput">Country</label>
         <input type="text"
                class="form-control"
                id="countryInput"
                name="countryName"
+               formControlName="country"
                [(ngModel)]="country.country">
         <small class="form-text text-muted">Input name of country</small>
-        <div class="alert alert-danger">
-          This country alredy exists
+        <div *ngIf="_country.invalid && (_country.touched || _country.dirty)" class="alert alert-danger">
+          <p *ngIf="false">This country already exists</p>
+          <p *ngIf="_country.errors?.required">This field is required</p>
+          <p *ngIf="_country.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_country.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_country.errors?.pattern">The word had invalid symbols</p>
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addCountry(country)">Add country</button>
+    <button class="btn btn-success"
+            [disabled]="countryForm.invalid"
+            (click)="addCountry(country)">
+      Add country
+    </button>
   </div>
 </ng-template>
 
@@ -142,30 +178,50 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="cityForm" novalidate>
       <div class="form-group">
         <label for="countryForCity" class="mt-3 h5">Country</label>
         <select class="form-control"
                 id="countryForCity"
                 name="country"
+                formControlName="country"
                 #countryForCity
                 [(ngModel)]="city.country">
           <option *ngFor="let country of countries"
-                  [value]="country.idCountry">{{country.country}}</option>
+                  [selected]="true"
+                  [value]="country.idCountry">
+            {{country.country}}
+          </option>
         </select>
+        <div *ngIf="_countryForCity.invalid && (_countryForCity.touched || _countryForCity.dirty)"
+             class="alert alert-danger">
+          <p *ngIf="_countryForCity.errors?.required">This field is required</p>
+        </div>
         <label for="cityInput" class="mt-3 h5">City</label>
         <input type="text"
                class="form-control"
                id="cityInput"
                name="cityName"
+               formControlName="city"
                [(ngModel)]="city.city">
         <small class="form-text text-muted">Input name of city</small>
+        <div *ngIf="_city.invalid && (_city.touched || _city.dirty)" class="alert alert-danger">
+          <p *ngIf="false">This country already exists</p>
+          <p *ngIf="_city.errors?.required">This field is required</p>
+          <p *ngIf="_city.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_city.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_city.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addCity(city,countryForCity.value)">Add city</button>
+    <button class="btn btn-success"
+            [disabled]="cityForm.invalid"
+            (click)="addCity(city,countryForCity.value)">
+      Add city
+    </button>
   </div>
 </ng-template>
 
@@ -180,7 +236,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="stationForm" novalidate>
       <div class="form-group">
         <label for="countryForStation" class="mt-3 h5">Country</label>
         <select class="form-control"
@@ -189,30 +245,50 @@
                 #countryForStation
                 (change)="loadAllCitiesByCountry(countryForStation.value)">
           <option *ngFor="let country of countries"
-                  [value]="country.idCountry">{{country.country}}</option>
+                  [selected]="true"
+                  [value]="country.idCountry">
+            {{country.country}}
+          </option>
         </select>
         <label for="cityForStation" class="mt-3 h5">City</label>
         <select class="form-control"
                 id="cityForStation"
                 name="city"
+                formControlName="city"
                 #cityForStation
                 [(ngModel)]="station.city">
           <option *ngFor="let city of cities"
                   [value]="city.idCity">{{city.city}}</option>
         </select>
+        <div *ngIf="_cityForStation.invalid && (_cityForStation.touched || _cityForStation.dirty)"
+             class="alert alert-danger">
+          <p *ngIf="_cityForStation.errors?.required">This field is required</p>
+        </div>
         <label for="stationInput" class="mt-3 h5">Station</label>
         <input type="text"
                class="form-control"
                id="stationInput"
                name="stationName"
+               formControlName="station"
                [(ngModel)]="station.station">
         <small class="form-text text-muted">Input name of station</small>
+        <div *ngIf="_station.invalid && (_station.touched || _station.dirty)" class="alert alert-danger">
+          <p *ngIf="false">This country already exists</p>
+          <p *ngIf="_station.errors?.required">This field is required</p>
+          <p *ngIf="_station.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_station.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_station.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addStation(station,cityForStation.value)">Add station</button>
+    <button class="btn btn-success"
+            [disabled]="stationForm.invalid"
+            (click)="addStation(station,cityForStation.value)">
+      Add station
+    </button>
   </div>
 </ng-template>
 
@@ -227,21 +303,32 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="trainModelForm" novalidate>
       <div class="form-group">
         <label for="trainModelInput" class="mt-3 h5">Train model</label>
         <input type="text"
                class="form-control"
                id="trainModelInput"
                name="trainModelName"
+               formControlName="trainModel"
                [(ngModel)]="trainModel.model">
         <small class="form-text text-muted">Input name of model</small>
+        <div *ngIf="_trainModel.invalid && (_trainModel.touched || _trainModel.dirty)" class="alert alert-danger">
+          <p *ngIf="false">This country already exists</p>
+          <p *ngIf="_trainModel.errors?.required">This field is required</p>
+          <p *ngIf="_trainModel.errors?.minlength">The min length isn't valid</p>
+          <p *ngIf="_trainModel.errors?.maxlength">The max length isn't valid</p>
+          <p *ngIf="_trainModel.errors?.pattern">The word had invalid symbols</p>
+        </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addTrainModel(trainModel)">Add model</button>
+    <button class="btn btn-success"
+            [disabled]="trainModelForm.invalid"
+            (click)="addTrainModel(trainModel)">Add model
+    </button>
   </div>
 </ng-template>
 
@@ -262,25 +349,42 @@
         <select class="form-control"
                 id="trainModelForTrain"
                 name="trainModel"
-                [(ngModel)]="train.model"
-                formControlName="trainModel">
+                formControlName="trainModel"
+                [(ngModel)]="train.model">
           <option *ngFor="let model of trainModels"
                   [value]="model.idTrainModel">{{model.model}}</option>
         </select>
+        <div *ngIf="_trainModelForTrain.invalid && (_trainModelForTrain.touched || _trainModelForTrain.dirty)"
+             class="alert alert-danger">
+          <p *ngIf="_trainModelForTrain.errors?.required">This field is required</p>
+        </div>
         <div class="mt-3">
+          <label for="dateOfCreation" class="h5">Date of creation</label>
           <input type="text"
+                 id="dateOfCreation"
                  placeholder="Select train creation date"
                  class="form-control"
                  formControlName="dateOfCreation"
                  [(ngModel)]="train.dateOfCreation"
+                 [minDate]="minDate"
+                 [maxDate]="maxDate"
+                 [bsConfig]="{
+                 isAnimated: true,
+                 dateInputFormat: 'DD.MM.YYYY'}"
                  bsDatepicker>
+          <div *ngIf="_dateOfCreation.invalid && (_dateOfCreation.touched || _dateOfCreation.dirty)"
+               class="alert alert-danger">
+            <p *ngIf="_dateOfCreation.errors?.required">This field is required</p>
+          </div>
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addTrain(train)">Add train</button>
+    <button class="btn btn-success"
+            [disabled]="trainForm.invalid"
+            (click)="addTrain(train)">Add train</button>
   </div>
 </ng-template>
 
@@ -296,7 +400,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="tripForm" novalidate>
       <div class="form-group">
         <div class="row">
           <div class="col-6">
@@ -312,28 +416,43 @@
             <select class="form-control"
                     id="countryForTripOne"
                     name="country"
+                    formControlName="departureCountry"
                     #countryForTripDeparture
                     (change)="loadAllDepartureCitiesByCountry(countryForTripDeparture.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
+            <div *ngIf="_departureCountry.invalid && (_departureCountry.touched || _departureCountry.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_departureCountry.errors?.required">This field is required</p>
+            </div>
             <label for="cityForTripOne" class="mt-3 h5">City</label>
             <select class="form-control"
                     id="cityForTripOne"
                     name="city"
+                    formControlName="departureCity"
                     [(ngModel)]="idDepartureCity"
                     (change)="loadAllDepartureStationsByCity(idDepartureCity)">
               <option *ngFor="let city of departureCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
+            <div *ngIf="_departureCity.invalid && (_departureCity.touched || _departureCity.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_departureCity.errors?.required">This field is required</p>
+            </div>
             <label for="stationForTripOne" class="mt-3 h5">Station</label>
             <select class="form-control"
                     id="stationForTripOne"
                     name="station"
+                    formControlName="departureStation"
                     [(ngModel)]="trip.departureStation">
               <option *ngFor="let station of departureStation"
                       [value]="station.idStation">{{station.station}}</option>
             </select>
+            <div *ngIf="_departureStation.invalid && (_departureStation.touched || _departureStation.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_departureStation.errors?.required">This field is required</p>
+            </div>
           </div>
           <!--          Two col-->
           <div class="col-6">
@@ -341,28 +460,43 @@
             <select class="form-control"
                     id="countryForTripTwo"
                     name="country"
+                    formControlName="arrivalCountry"
                     #countryForTripArrival
                     (change)="loadAllArrivalCitiesByCountry(countryForTripArrival.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
+            <div *ngIf="_arrivalCountry.invalid && (_arrivalCountry.touched || _arrivalCountry.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_arrivalCountry.errors?.required">This field is required</p>
+            </div>
             <label for="cityForTripTwo" class="mt-3 h5">City</label>
             <select class="form-control"
                     id="cityForTripTwo"
                     name="city"
+                    formControlName="arrivalCity"
                     [(ngModel)]="idArrivalCity"
                     (change)="loadAllArrivalStationsByCity(idArrivalCity)">
               <option *ngFor="let city of arrivalCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
+            <div *ngIf="_arrivalCity.invalid && (_arrivalCity.touched || _arrivalCity.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_arrivalCity.errors?.required">This field is required</p>
+            </div>
             <label for="stationForTripTwo" class="mt-3 h5">Station</label>
             <select class="form-control"
                     id="stationForTripTwo"
                     name="station"
+                    formControlName="arrivalStation"
                     [(ngModel)]="trip.arrivalStation">
               <option *ngFor="let station of arrivalStation"
                       [value]="station.idStation">{{station.station}}</option>
             </select>
+            <div *ngIf="_arrivalStation.invalid && (_arrivalStation.touched || _arrivalStation.dirty)"
+                 class="alert alert-danger">
+              <p *ngIf="_arrivalStation.errors?.required">This field is required</p>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -372,22 +506,30 @@
               <select class="form-control"
                       id="trainModelForTrip"
                       name="trainModel"
+                      formControlName="trainModel"
                       [(ngModel)]="train.model"
                       #trainModelForTrip
-                      (change)="loadAllByTrainModelTrain(trainModelForTrip.value)"
-                      formControlName="trainModel">
+                      (change)="loadAllTrainsByTrainModel(trainModelForTrip.value)">
                 <option *ngFor="let model of trainModels"
                         [value]="model.idTrainModel">{{model.model}}</option>
               </select>
+              <div *ngIf="_trainModelForTrip.invalid && (_trainModelForTrip.touched || _trainModelForTrip.dirty)"
+                   class="alert alert-danger">
+                <p *ngIf="_trainModelForTrip.errors?.required">This field is required</p>
+              </div>
               <label for="trainForTrip" class="mt-3 h5">Train</label>
               <select class="form-control"
                       id="trainForTrip"
                       name="trainModel"
-                      [(ngModel)]="trip.train"
-                      formControlName="train">
+                      formControlName="train"
+                      [(ngModel)]="trip.train">
                 <option *ngFor="let train of trains"
                         [value]="train.idTrain">№{{train.idTrain}} {{train.dateOfCreation | date}}</option>
               </select>
+              <div *ngIf="_train.invalid && (_train.touched || _train.dirty)"
+                   class="alert alert-danger">
+                <p *ngIf="_train.errors?.required">This field is required</p>
+              </div>
             </div>
           </div>
         </div>
@@ -396,7 +538,8 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success" (click)="addTrip(trip)">Add trip</button>
+    <button class="btn btn-success"
+            (click)="addTrip(trip)">Add trip</button>
   </div>
 </ng-template>
 

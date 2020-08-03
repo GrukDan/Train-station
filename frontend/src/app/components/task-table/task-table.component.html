@@ -8,37 +8,40 @@
             <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Task</th>
-              <th scope="col">Code</th>
-              <th scope="col">Status</th>
-              <th scope="col">Date of creation</th>
-              <th scope="col">Task creator</th>
+              <th scope="col" (click)="sort(direction,parameters[0])">Task</th>
+              <th scope="col" (click)="sort(direction,parameters[1])">Code</th>
+              <th scope="col" (click)="sort(direction,parameters[2])">Status</th>
+              <th scope="col" (click)="sort(direction,parameters[3])">Date of creation</th>
+              <th scope="col" (click)="sort(direction,parameters[4])">Task creator</th>
               <th scope="col">More</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
+            <tr *ngFor="let taskViewModel of taskViewModels;let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{taskViewModel.taskName}}</td>
+              <td>{{taskViewModel.taskCode}}</td>
+              <td>{{taskViewModel.statusName}}</td>
+              <td>{{taskViewModel.dateOfCreation | date}}</td>
+              <td>{{taskViewModel.taskCreatorName}} {{taskViewModel.taskCreatorSurname}}</td>
+              <td>
+                <button
+                  (click)="showTask(taskViewModel.idTask)"
+                  class="btn btn-primary">
+                  Show more
+                </button>
+              </td>
             </tr>
             </tbody>
           </table>
           <div class="pagination justify-content-center">
-            <pagination [boundaryLinks]="true" [totalItems]="77"
-                        previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+            <pagination [boundaryLinks]="true"
+                        [totalItems]="totalElements"
+                        (pageChanged)="pageChanged($event)"
+                        previousText="&lsaquo;"
+                        nextText="&rsaquo;"
+                        firstText="&laquo;"
+                        lastText="&raquo;">
             </pagination>
           </div>
         </div>
@@ -46,29 +49,42 @@
     </div>
     <div class="col-sm-5 col-12">
       <h2 class="my-3">Task's data</h2>
-      <div class="row">
+      <div
+        *ngIf="taskViewModel;else noTaskViewModel"
+        class="row">
         <div class="col-6">
           <h3>Task name:</h3>
-          <span class="h4">task</span>
+          <span class="h4 text-monospace">{{taskViewModel.taskName}}</span>
           <h3>Task code:</h3>
-          <span class="h4">task</span>
+          <span class="h4 text-monospace">{{taskViewModel.taskCode}}</span>
           <h3>Status:</h3>
-          <span class="h4">closed</span>
+          <span class="h4 text-monospace">{{taskViewModel.statusName}}</span>
         </div>
         <div class="col-6">
           <h3>Date of creation:</h3>
-          <span class="h4">12.33.3222</span>
+          <span class="h4 text-monospace">{{taskViewModel.dateOfCreation | date}}</span>
           <h3>Task creator:</h3>
-          <span class="h4">Oleg Oleg</span>
-          <h3>Task executor:</h3>
-          <span class="h4">Oleg Oleg</span>
+          <span class="h4 text-monospace">{{taskViewModel.taskCreatorSurname}} {{taskViewModel.taskCreatorName}}</span>
+          <h3>Task executors:</h3>
+          <ul>
+          <li
+            *ngFor="let executor of taskViewModel?.users;let i = index"
+            [value]="executor.idUser"
+            class="h4 text-monospace">{{executor.surname}} {{executor.name}}</li>
+          </ul>
         </div>
       </div>
-      <div class="mt-2">
+      <div
+        *ngIf="taskViewModel"
+        class="mt-2">
         <h3>Description:</h3>
-        <p>D3’s (Data-Driven-Documents) core capability is to manipulate DOM elements in response to dynamic application
-          data. But, so it is for Angular, React, jQuery, and a host of other frameworks.</p>
+        <p class="text-monospace">{{taskViewModel.description}}</p>
       </div>
     </div>
   </div>
 </div>
+
+
+<ng-template #noTaskViewModel>
+  <h3><i>No selected task</i></h3>
+</ng-template>

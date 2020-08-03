@@ -42,6 +42,11 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    public List<City> getAllByIdIn(List<Long> ids) {
+        return cityRepository.findAllById(ids);
+    }
+
+    @Override
     public List<City> getPageSorted(int page, int size, String parameter, boolean direction, String search) {
         return direction ?
                 cityRepository.findAllByCity(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, search))).getContent()

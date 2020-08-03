@@ -1,4 +1,4 @@
 export class TrainModel {
-  idTrainModel:number;
-  model:string;
+  idTrainModel: number;
+  model: string;
 }

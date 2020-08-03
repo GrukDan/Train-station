@@ -1,6 +1,8 @@
 package bsuir.service.taskDetails;
 
+import bsuir.model.pageModel.TaskPage;
 import bsuir.model.taskDetails.Task;
+import bsuir.model.viewModel.TaskViewModel;
 
 import java.util.List;
 
@@ -13,9 +15,9 @@ public interface TaskService {
 
     List<Task> getAllByTaskCreator(long taskCreator);
 
-    List<Task> getPageSorted(int page, int size, String parameter, boolean direction);
+    TaskPage getPage(int page, int size, boolean direction, String parameter);
 
-    List<Task> getPageByTaskNameSorted(int page, int size, String parameter, boolean direction,String search);
+    List<String> getSortParameters();
 
-    List<Task> getPageSorted(int page, int size, String parameter, boolean direction, String search);
+    TaskViewModel getTaskViewModelById(long id);
 }

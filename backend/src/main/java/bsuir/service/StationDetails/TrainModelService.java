@@ -13,4 +13,6 @@ public interface TrainModelService {
     TrainModel getById(long id);
 
     List<TrainModel> getAll();
+
+    List<TrainModel> getAllByIdIn(List<Long> ids);
 }

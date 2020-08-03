@@ -3,7 +3,10 @@ package bsuir.service.taskDetails.Impl;
 import bsuir.model.taskDetails.Status;
 import bsuir.repository.taskDetails.StatusRepository;
 import bsuir.service.taskDetails.StatusService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,8 @@ public class StatusServiceImpl implements StatusService {
     private StatusRepository statusRepository;
 
     @Override
-    public Status getById(long id) {
-        return statusRepository.findById(id).orElse(null);
+    public Status getById(long id) throws NotFoundException {
+        return  statusRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override

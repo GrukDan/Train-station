@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {User} from "../../models/user-details/user";
 import {Subscription} from "rxjs";
 import {UserService} from "../../services/user-details/user.service";
@@ -12,33 +12,40 @@ import {PageChangedEvent} from "ngx-bootstrap/pagination";
 })
 export class UserTableComponent implements OnInit {
 
-  users:User[];
-  parameters:string[];
+  users:User[] = [];
+  parameters:string[] = [];
 
   size:number = 7;
   totalElements:number = 0;
   direction:boolean = false;
   parameter:string;
 
-  subscriptions:Subscription[];
+  subscriptions:Subscription[] = [];
 
-  constructor(private userService:UserService) {
-    this.subscriptions = [];
-  }
+  constructor(private userService:UserService) {}
 
   ngOnInit() {
     this.loadParameters();
+  }
+
+  @HostListener('window:beforeunload')
+  ngOnDestroy(): void {
+    this.dispose();
+  }
+
+  dispose() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   loadParameters(){
     this.subscriptions.push(this.userService.getParameters().subscribe(parameters=>{
       this.parameters = parameters as string[];
       this.parameter = parameters[0];
-      this.loadUser(0,this.size,this.direction,this.parameters[0]);
+      this.loadPage(0,this.size,this.direction,this.parameter);
     }))
   }
 
-  loadUser(page:number,size:number,direction:boolean,parameter:string){
+  loadPage(page:number, size:number, direction:boolean, parameter:string){
     this.subscriptions.push(this.userService.getPage(page,size,direction,parameter).subscribe(userPage=>{
       this.users = userPage.users as User[];
       this.totalElements = userPage.totalElements / this.size * 10 ;
@@ -55,10 +62,10 @@ export class UserTableComponent implements OnInit {
 
   sort(direction: boolean,parameter:string) {
     this.changeDirection();
-    this.loadUser(0,this.size,this.direction,parameter);
+    this.loadPage(0,this.size,this.direction,parameter);
   }
 
   pageChanged($event: PageChangedEvent) {
-    this.loadUser($event.page - 1,this.size,this.direction,this.parameters[0]);
+    this.loadPage($event.page - 1,this.size,this.direction,this.parameters[0]);
   }
 }

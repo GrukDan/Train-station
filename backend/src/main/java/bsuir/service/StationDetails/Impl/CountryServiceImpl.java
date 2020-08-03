@@ -9,8 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CountryServiceImpl implements CountryService {
@@ -48,5 +46,10 @@ public class CountryServiceImpl implements CountryService {
         return direction ?
                 countryRepository.findAllByCountry(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, search))).getContent()
                 : countryRepository.findAllByCountry(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, search))).getContent();
+    }
+
+    @Override
+    public List<Country> getAllByIdIn(List<Long> ids) {
+        return countryRepository.findAllById(ids);
     }
 }

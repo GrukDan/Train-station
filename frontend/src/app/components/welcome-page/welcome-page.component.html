@@ -1,39 +1,46 @@
-<script src="../user-table/user-table.component.ts"></script>
 <div class="container-fluid">
+  <div class="jumbotron">
+    <h1>Railway station control system</h1>
+    <p>System for controlling a railway station. Allows you to manage riders, schedules and trains.</p>
+  </div>
   <carousel>
     <slide>
-      <img src="assets/images/train1.jpg" alt="first slide" class="carousel-img">
+      <img
+        src="assets/images/train1.jpg"
+        alt="first slide"
+        class="carousel-img">
       <div class="carousel-caption d-none d-md-block">
-        <ng-container *ngTemplateOutlet="loginCard"></ng-container>
+        <div class="row justify-content-md-center">
+          <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-5">
+          </div>
+        </div>
       </div>
     </slide>
     <slide>
       <img src="assets/images/train2.jpg" alt="second slide" class="carousel-img">
       <div class="carousel-caption d-none d-md-block">
-        <ng-container *ngTemplateOutlet="loginCard"></ng-container>
       </div>
     </slide>
     <slide>
       <img src="assets/images/train3.jpg" alt="third slide" class="carousel-img">
       <div class="carousel-caption d-none d-md-block">
-        <ng-container *ngTemplateOutlet="loginCard"></ng-container>
       </div>
     </slide>
     <slide>
       <img src="assets/images/train4.jpg" alt="third slide" class="carousel-img">
       <div class="carousel-caption d-none d-md-block">
-        <ng-container *ngTemplateOutlet="loginCard"></ng-container>
       </div>
     </slide>
   </carousel>
 
   <footer>
-      <div class="row">
+    <div class="row">
       <div class="col-md-4 col-sm-6 col-12">
         <div class="card m-5 scale">
           <img src="assets/images/train4.jpg" class="card-img-top" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+              content.</p>
           </div>
         </div>
       </div>
@@ -41,7 +48,8 @@
         <div class="card m-5 scale">
           <img src="assets/images/train2.jpg" class="card-img-top" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+              content.</p>
           </div>
         </div>
       </div>
@@ -49,7 +57,8 @@
         <div class="card m-5 scale">
           <img src="assets/images/train1.jpg" class="card-img-top" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+              content.</p>
           </div>
         </div>
       </div>
@@ -57,27 +66,11 @@
   </footer>
 </div>
 
-
-
-<ng-template #loginCard>
-  <div class="card login-card ">
-    <div class="card-header text-dark">
-      <h3>Log in</h3>
-    </div>
-    <div class="card-body text-dark text-left">
-      <form>
-        <div class="form-group">
-          <label for="recipient-name" class="h4">Email:</label>
-          <input type="text" class="form-control" id="recipient-name">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="h4">Password:</label>
-          <input type="password" class="form-control" id="message-text">
-        </div>
-      </form>
-    </div>
-    <div class="card-footer">
-      <button class="btn btn-primary right-button">Log in <i class="fa fa-sign-in"></i></button>
-    </div>
-  </div>
-</ng-template>
+<div class="Absolute-Center">
+      <app-login-card
+        [(email)]="email"
+        [(password)]="password"
+        (change)="login($event)"
+        class="justify-content-center">
+      </app-login-card>
+</div>

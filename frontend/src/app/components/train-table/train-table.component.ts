@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, HostListener} from '@angular/core';
 import {ModalWindowService} from "../../services/modal-window/modal-window.service";
 import {Country} from "../../models/station-details/country";
 import {City} from "../../models/station-details/city";
@@ -19,6 +19,7 @@ import {TripService} from "../../services/station-details/trip.service";
 import {Subscription} from "rxjs";
 import {TripRecord} from "../../models/view-models/trip-record";
 import {PageChangedEvent} from "ngx-bootstrap/pagination";
+import {logger} from "codelyzer/util/logger";
 
 
 @Component({
@@ -27,9 +28,14 @@ import {PageChangedEvent} from "ngx-bootstrap/pagination";
   styleUrls: ['./train-table.component.css'],
   providers: [{provide: BsDropdownConfig, useValue: {isAnimated: true, autoClose: true}}]
 })
-export class TrainTableComponent implements OnInit {
+export class TrainTableComponent implements OnInit, OnDestroy {
 
+  countryForm: FormGroup;
+  cityForm: FormGroup;
+  stationForm: FormGroup;
+  trainModelForm: FormGroup;
   trainForm: FormGroup;
+  tripForm: FormGroup;
 
   country: Country;
   city: City;
@@ -38,25 +44,31 @@ export class TrainTableComponent implements OnInit {
   train: Train;
   trip: Trip;
 
-  countries: Country[];
-  cities: City[];
-  trainModels: TrainModel[];
-  stations: Station[];
-  trains: Train[];
-
-  arrivalCities: City[];
-  departureCities: City[];
-  arrivalStation: Station[];
-  departureStation: Station[];
+  maxDate: Date;
+  minDate: Date;
 
   idDepartureCity: number;
   idArrivalCity: number;
 
-  tripRecords: TripRecord[];
-  subscriptions: Subscription[];
+  countries: Country[] = [];
+  cities: City[] = [];
+  trainModels: TrainModel[] = [];
+  stations: Station[];
+  trains: Train[] = [];
 
+  arrivalCities: City[] = [];
+  departureCities: City[] = [];
+  arrivalStation: Station[] = [];
+  departureStation: Station[] = [];
+
+  tripRecords: TripRecord[] = [];
+  subscriptions: Subscription[] = [];
+
+  size: number = 7;
+  totalElements: number = 0;
   direction: boolean = false;
-  parameters: string[];
+  parameter: string;
+  parameters:string[] = [];
 
   constructor(public modalWindowService: ModalWindowService,
               private validationService: ValidationService,
@@ -67,8 +79,9 @@ export class TrainTableComponent implements OnInit {
               private trainModelService: TrainModelService,
               private trainService: TrainService,
               private tripService: TripService) {
+  }
 
-    this.createValidationForm();
+  ngOnInit() {
 
     this.country = new Country();
     this.city = new City();
@@ -77,55 +90,63 @@ export class TrainTableComponent implements OnInit {
     this.train = new Train();
     this.trip = new Trip();
 
-    this.countries = [];
-    this.cities = [];
-    this.stations = [];
-    this.trains = [];
-    this.parameters = [];
+    this.minDate = new Date("01.01.1965");
+    this.maxDate = new Date();
 
-    this.tripRecords = [];
+    this.loadAllCountries();
+    this.loadAllCities();
+    this.loadAllStations();
+    this.loadAllTrainModels();
+    this.loadAllTrains();
 
-    this.subscriptions = [];
+    this.loadRecordPage(0, this.size, this.direction, this.parameters[0]);
   }
 
-  ngOnInit() {
+  @HostListener('window:beforeunload')
+  ngOnDestroy(): void {
+    this.dispose();
   }
 
-  createValidationForm() {
-    this.trainForm = this.validationService.getTrainFormGroup();
+  dispose() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  get _dateOfCreation() {
-    return this.trainForm.get('dateOfCreation');
+  changeDirection(){
+    this.direction = !this.direction;
+  }
+
+  sort(direction: boolean,parameter:string) {
+    this.changeDirection();
+    this.loadRecordPage(0,this.size,this.direction,parameter);
   }
 
   addCountry(country: Country) {
-    this.subscriptions.push(this.countryService.save(country).subscribe(country => {
+    this.subscriptions.push(this.countryService.save(country).subscribe(() => {
       this.modalWindowService.closeModal();
     }))
   }
 
   addCity(city: City, country: string) {
     city.country = parseInt(country);
-    this.subscriptions.push(this.cityService.save(city).subscribe(country => {
+    this.subscriptions.push(this.cityService.save(city).subscribe(() => {
       this.modalWindowService.closeModal();
     }))
   }
 
   addStation(station: Station, city: string) {
     station.city = parseInt(city);
-    this.subscriptions.push(this.stationService.save(station).subscribe(country => {
+    this.subscriptions.push(this.stationService.save(station).subscribe(() => {
       this.modalWindowService.closeModal();
     }))
   }
 
   addTrainModel(trainModel: TrainModel) {
-    this.subscriptions.push(this.trainModelService.save(trainModel).subscribe(trainModel => {
+    this.subscriptions.push(this.trainModelService.save(trainModel).subscribe(() => {
       this.modalWindowService.closeModal();
     }))
   }
 
-  loadAllTrainModel() {
+  loadAllTrainModels() {
     this.subscriptions.push(this.trainModelService.getAll().subscribe(trainModels => {
       this.trainModels = trainModels as TrainModel[];
     }))
@@ -137,6 +158,24 @@ export class TrainTableComponent implements OnInit {
     }))
   }
 
+  loadAllCities() {
+    this.subscriptions.push(this.cityService.getAll().subscribe(cities => {
+      this.cities = cities as City[];
+    }))
+  }
+
+  loadAllStations() {
+    this.subscriptions.push(this.stationService.getAll().subscribe(stations => {
+      this.stations = stations as Station[];
+    }))
+  }
+
+  loadAllTrains() {
+    this.subscriptions.push(this.trainService.getAll().subscribe(trains => {
+      this.trains = trains as Train[];
+    }))
+  }
+
   loadAllCitiesByCountry(country: any) {
     this.subscriptions.push(this.cityService.getAllByCountry(country).subscribe(cities => {
       this.cities = cities as City[];
@@ -144,36 +183,50 @@ export class TrainTableComponent implements OnInit {
   }
 
   openTripModal(newTrip: TemplateRef<any>) {
+    this.tripForm == null ?
+      this.tripForm = this.validationService.getTripFormGroup() : this.tripForm;
     this.modalWindowService.openModal(newTrip);
     this.loadAllCountries();
-    this.loadAllTrainModel();
+    this.loadAllTrainModels();
   }
 
   openTrainModal(newTrain: TemplateRef<any>) {
-    this.loadAllTrainModel();
+    this.trainForm == null ?
+      this.trainForm = this.validationService.getTrainFormGroup() : this.trainForm;
     this.modalWindowService.openModal(newTrain);
+    this.loadAllTrainModels();
   }
 
   openTrainModelModal(newTrainModel: TemplateRef<any>) {
+    this.trainModelForm == null ?
+      this.trainModelForm = this.validationService.getTrainModelFormGroup() : this.trainModelForm;
     this.modalWindowService.openModal(newTrainModel);
   }
 
   openStationModal(newStation: TemplateRef<any>) {
+    this.loadAllCountries();
+    this.stationForm == null ?
+      this.stationForm = this.validationService.getStationFormGroup() : this.stationForm;
     this.modalWindowService.openModal(newStation);
   }
 
   openCityModal(newCity: TemplateRef<any>) {
+    this.cityForm == null ?
+      this.cityForm = this.validationService.getCityFormGroup() : this.cityForm;
     this.modalWindowService.openModal(newCity);
     this.loadAllCountries();
   }
 
   openCountryModal(newCountry: TemplateRef<any>) {
+    this.countryForm == null ?
+      this.countryForm = this.validationService.getCountryFormGroup() : this.countryForm;
     this.modalWindowService.openModal(newCountry);
   }
 
   addTrip(trip: Trip) {
-    this.subscriptions.push(this.tripService.save(trip).subscribe(trip => {
-    }))
+    this.subscriptions.push(this.tripService.save(trip).subscribe(
+      () => this.modalWindowService.closeModal()
+    ));
   }
 
   loadAllDepartureCitiesByCountry(country: any) {
@@ -202,22 +255,169 @@ export class TrainTableComponent implements OnInit {
   }
 
   addTrain(train: Train) {
-    this.subscriptions.push(this.trainService.save(train).subscribe(train => {
-
-    }))
+    this.subscriptions.push(this.trainService.save(train).subscribe(()=>{
+      this.modalWindowService.closeModal();
+    }));
   }
 
   loadRecordPage(page: number, size: number, direction: boolean, parameter: string) {
-
+    this.subscriptions.push(this.tripService.getPage(page, size, direction, parameter)
+      .subscribe(tripPage => {
+        this.tripRecords = tripPage.tripRecords as TripRecord[];
+        this.totalElements = tripPage.totalElements / this.size * 10 ;
+      }))
   }
 
   pageChanged(page: number, direction: boolean, parameter) {
     this.loadRecordPage(page, 7, direction, parameter);
   }
 
-  loadAllByTrainModelTrain(trainModel: any) {
-    this.subscriptions.push(this.trainService.getAllByModel(trainModel).subscribe(trains=>{
+  loadAllTrainsByTrainModel(trainModel: any) {
+    this.subscriptions.push(this.trainService.getAllByModel(trainModel).subscribe(trains => {
       this.trains = trains as Train[];
     }))
+  }
+
+  get _trainModel() {
+    return this.trainModelForm.get('trainModel')
+  }
+
+  get _trainModelForTrain() {
+    return this.trainForm.get('trainModel')
+  }
+
+  get _dateOfCreation() {
+    return this.trainForm.get('dateOfCreation')
+  }
+
+  get _train() {
+    return this.tripForm.get('train')
+  }
+
+  get _departureCountry() {
+    return this.tripForm.get('departureCountry');
+  }
+
+  get _arrivalCountry() {
+    return this.tripForm.get('arrivalCountry');
+  }
+
+  get _arrivalCity() {
+    return this.tripForm.get('arrivalCity');
+  }
+
+  get _departureCity() {
+    return this.tripForm.get('departureCity');
+  }
+
+  get _departureStation() {
+    return this.tripForm.get('departureStation')
+  }
+
+  get _arrivalStation() {
+    return this.tripForm.get('arrivalStation')
+  }
+
+  get _trainModelForTrip() {
+    return this.tripForm.get('trainModel');
+  }
+
+  get _country() {
+    return this.countryForm.get('country')
+  }
+
+  get _countryForCity() {
+    return this.cityForm.get('country')
+  }
+
+  get _city() {
+    return this.cityForm.get('city')
+  }
+
+  get _cityForStation() {
+    return this.stationForm.get('city')
+  }
+
+  get _station() {
+    return this.stationForm.get('station')
+  }
+
+  buildStationChild(city: number): any[] {
+    const stations = this.stations.filter(station => station.city == city);
+    const children = [];
+    stations.forEach(station => {
+      children.push({
+        name: station.station,
+        hasChildren: false,
+        isExpanded: false
+      })
+    });
+
+    return children;
+  }
+
+  buildCitiesChild(country: number): any[] {
+    const cities = this.cities.filter(city => city.country == country);
+
+    const childCities = [];
+    cities.forEach(city => {
+      childCities.push({
+        id: city.idCity,
+        name: city.city,
+        hasChildren: false,
+        isExpanded: false,
+        children: this.buildStationChild(city.idCity),
+      })
+    });
+
+    return childCities;
+  }
+
+  buildCountriesRoot(): any[] {
+    const roots = [];
+    this.countries.forEach(country => {
+      roots.push({
+        id: country.idCountry,
+        name: country.country,
+        hasChildren: true,
+        children: this.buildCitiesChild(country.idCountry),
+      })
+    });
+
+    return roots;
+  }
+
+  buildTrainChild(trainModel: number): any[] {
+    const trains = this.trains.filter(train => train.model == trainModel);
+    const children = [];
+    trains.forEach(train => {
+      children.push({
+        name: '№' + train.idTrain + ' of ' + train.dateOfCreation,
+        hasChildren: false,
+        isExpanded: false
+      })
+    });
+    return children;
+  }
+
+  buildTrainModelsRoot(): any[] {
+    const roots = [];
+    this.trainModels.forEach(trainModel => {
+      roots.push({
+        id: trainModel.idTrainModel,
+        name: trainModel.model,
+        hasChildren: true,
+        children: this.buildTrainChild(trainModel.idTrainModel),
+      })
+    });
+    return roots;
+  }
+
+  buildStationNodes(): any[] {
+    return this.buildCountriesRoot();
+  }
+
+  buildTrainNodes(): any[] {
+    return this.buildTrainModelsRoot();
   }
 }

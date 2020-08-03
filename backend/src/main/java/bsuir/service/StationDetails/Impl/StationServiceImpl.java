@@ -33,4 +33,14 @@ public class StationServiceImpl implements StationService {
     public List<Station> getAllByCity(long city) {
         return stationRepository.findAllByCity(city);
     }
+
+    @Override
+    public List<Station> getAll() {
+        return stationRepository.findAll();
+    }
+
+    @Override
+    public List<Station> getAllByIdIn(List<Long> ids) {
+        return stationRepository.findAllById(ids);
+    }
 }

@@ -5,21 +5,13 @@ import {Train} from "../station-details/train";
 import {TrainModel} from "../station-details/train-model";
 import {Trip} from "../station-details/trip";
 
-export class TripRecord {
-  country:Country;
-  city:City;
-  station:Station;
-  trainModel:TrainModel;
-  train:Train;
-  trip:Trip;
-
-  constructor(){}
-
-  // constructor() {
-  //   this.country = new Country();
-  //   this.city = new City();
-  //   this.station = new Station();
-  //   this.trainModel = new TrainModel();
-  //   this.trip = new Trip();
-  // }
+export class TripRecord extends Trip{
+  departureCountryObj:Country;
+  arrivalCountryObj:Country;
+  departureCityObj:City;
+  arrivalCityObj:City;
+  departureStationObj:Station;
+  arrivalStationObj:Station;
+  trainModelObj:TrainModel;
+  trainObj:Train;
 }
