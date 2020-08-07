@@ -4,6 +4,7 @@ import bsuir.model.userDetails.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,8 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "task", schema = "train_station")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Data
-@Builder
+@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
@@ -64,5 +64,71 @@ public class Task {
         dateOfCreation = task.dateOfCreation;
         status = task.status;
         users = task.users;
+    }
+
+    public void setIdTask(long idTask) {
+        this.idTask = idTask;
+    }
+
+    public void setTaskCreator(long taskCreator) {
+        this.taskCreator = taskCreator;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setTaskCode(String taskCode) {
+        this.taskCode = taskCode;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
+    }
+
+    @JsonProperty
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public long getIdTask() {
+        return idTask;
+    }
+
+    public long getTaskCreator() {
+        return taskCreator;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public String getTaskCode() {
+        return taskCode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public long getStatus() {
+        return status;
+    }
+
+    @JsonIgnore
+    public Set<User> getUsers() {
+        return users;
     }
 }

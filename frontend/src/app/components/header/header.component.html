@@ -150,6 +150,36 @@
           <p *ngIf="_taskName.errors?.pattern">The word had invalid symbols</p>
         </div>
       </div>
+      <!--      <div *ngIf="experts.length" class="form-group">-->
+      <!--        <span for="formControlRange">Number of experts: {{expertsNumber}}</span>-->
+      <!--        <input type="range"-->
+      <!--               min="1"-->
+      <!--               [max]="experts.length"-->
+      <!--               value="30"-->
+      <!--               (input)="valueChanged($event.target.value)"-->
+      <!--               class="form-control-range"-->
+      <!--               id="formControlRange"-->
+      <!--               formControlName="numberOfExperts">-->
+      <!--      </div>-->
+
+      <div *ngIf="expertsNumber > 0">
+        <p>Experts for task</p>
+        <ol>
+          <li *ngFor="let expert of experts;let i = index;">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [value]="expert.idUser"
+                  (change)="valueChanged($event.target.checked,$event.target.value,i)">
+                {{expert.surname}} {{expert.name}}
+              </label>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <p *ngIf="!experts.length">No experts...</p>
       <div class="form-group mt-5">
         <div class="input-group">
           <div class="input-group-prepend">

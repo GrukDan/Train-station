@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
-import {Subscription} from "rxjs";
+import {Observable, of, Subscription} from "rxjs";
 import {RoleService} from "../../services/user-details/role.service";
 import {Role} from "../../models/user-details/role";
 import {User} from "../../models/user-details/user";
@@ -16,10 +16,11 @@ import {ValidationService} from "../../services/reactive-forms/validation.servic
 import {TripService} from "../../services/station-details/trip.service";
 import {TripRecord} from "../../models/view-models/trip-record";
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
@@ -33,9 +34,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   roles: Role[] = [];
   statuses: Status[] = [];
-  tripRecords:TripRecord[] = [];
+  tripRecords: TripRecord[] = [];
 
-  experts:User[] = []
+  experts: User[] = [];
+  selectedExperts: Array<number>;
+  expertsNumber: number = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -43,7 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private userService: UserService,
               private taskService: TaskService,
               private statusService: StatusService,
-              private tripService:TripService,
+              private tripService: TripService,
               private validationService: ValidationService,
               public modalWindowService: ModalWindowService) {
   }
@@ -89,11 +92,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   addTask(task: Task) {
-    task.taskCreator = 16;
-    task.dateOfCreation = new Date();
-    this.subscriptions.push(this.taskService.save(task).subscribe());
-    this.taskForm.reset();
-    this.modalWindowService.closeModal();
+
+    this.subscriptions.push(
+      this.selectExpertsById(this.collectSelectedIds())
+        .subscribe(selectedExperts=>{
+          task.users = selectedExperts;
+
+          task.taskCreator = 16;
+          task.dateOfCreation = new Date();
+          console.log(task);
+          this.subscriptions.push(this.taskService.save(task).subscribe());
+          this.taskForm.reset();
+          this.modalWindowService.closeModal();
+      })
+    );
   }
 
   createVoidUserForm() {
@@ -147,13 +159,30 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.taskForm.get('status');
   }
 
-  loadTrips(){
+
+  loadTrips() {
 
   }
 
   loadExperts() {
-    this.subscriptions.push(this.userService.getExperts().subscribe(experts=>{
+    this.subscriptions.push(this.userService.getExperts().subscribe(experts => {
       this.experts = experts as User[];
+      this.expertsNumber = this.experts.length;
+      this.selectedExperts = (new Array<number>(this.expertsNumber)).fill(-1);
     }))
+  }
+
+
+  valueChanged(checked: boolean, value: any, index: number) {
+    checked ? this.selectedExperts[index] = value : this.selectedExperts[index] = -1;
+  }
+
+
+  collectSelectedIds():number[]{
+    return this.selectedExperts.filter(id=>id>0);
+  }
+
+  selectExpertsById(ids:number[]):Observable<User[]>{
+    return of(this.experts.filter(expert=>ids.some(id=> id == expert.idUser)));
   }
 }

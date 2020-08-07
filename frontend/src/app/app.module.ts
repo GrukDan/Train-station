@@ -25,6 +25,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { TreeStationComponent } from './components/tree-station/tree-station.component';
 import {TreeModule} from "angular-tree-component";
 import { LoginCardComponent } from './components/login-card/login-card.component';
+import { FillPipe } from './pipes/fill.pipe';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { LoginCardComponent } from './components/login-card/login-card.component
     TrainTableComponent,
     TreeStationComponent,
     LoginCardComponent,
+    FillPipe,
   ],
   imports: [
     BrowserModule,
@@ -57,6 +59,7 @@ import { LoginCardComponent } from './components/login-card/login-card.component
     DatepickerModule.forRoot(),
     BrowserAnimationsModule,
     TreeModule.forRoot(),
+
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]

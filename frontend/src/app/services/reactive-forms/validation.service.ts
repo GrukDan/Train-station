@@ -9,7 +9,7 @@ export class ValidationService {
   constructor(private fb: FormBuilder) {
   }
 
-  public getLoginFormGroup():FormGroup{
+  public getLoginFormGroup(): FormGroup {
     return this.fb.group({
       email: ['',
         [
@@ -18,7 +18,7 @@ export class ValidationService {
           Validators.minLength(7),
           Validators.pattern(/^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i)
         ]],
-      password:['',
+      password: ['',
         [
           Validators.required,
           Validators.minLength(2),
@@ -71,12 +71,12 @@ export class ValidationService {
 
   public getTripFormGroup(): FormGroup {
     return this.fb.group({
-      trainModel:['',[Validators.required]],
+      trainModel: ['', [Validators.required]],
       train: ['', [Validators.required]],
-      departureCountry:['',[Validators.required]],
-      arrivalCountry:['',[Validators.required]],
-      departureCity:['',[Validators.required]],
-      arrivalCity:['',[Validators.required]],
+      departureCountry: ['', [Validators.required]],
+      arrivalCountry: ['', [Validators.required]],
+      departureCity: ['', [Validators.required]],
+      arrivalCity: ['', [Validators.required]],
       departureStation: ['', [Validators.required]],
       arrivalStation: ['', [Validators.required]],
     })
@@ -97,7 +97,7 @@ export class ValidationService {
 
   public getCityFormGroup(): FormGroup {
     return this.fb.group({
-      country:['',[Validators.required]],
+      country: ['', [Validators.required]],
       city: ['',
         [
           Validators.required,
@@ -111,7 +111,7 @@ export class ValidationService {
 
   public getStationFormGroup(): FormGroup {
     return this.fb.group({
-      city:['',[Validators.required]],
+      city: ['', [Validators.required]],
       station: ['',
         [
           Validators.required,
@@ -133,7 +133,7 @@ export class ValidationService {
         Validators.maxLength(50),
         Validators.pattern(/^[а-яА-ЯёЁa-zA-Z ]+$/)
       ]],
-      status:['',[Validators.required]],
+      status: ['', [Validators.required]],
       description: ['', [Validators.maxLength(100)]]
     })
   }
