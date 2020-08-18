@@ -8,6 +8,7 @@ import bsuir.service.taskDetails.StatusService;
 import bsuir.service.taskDetails.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,11 @@ public class TaskController {
     @RequestMapping(value = "/save",method = RequestMethod.PUT)
     private ResponseEntity<Task> save(@RequestBody Task task){
         log.info("PUT request [{URL: " +"/api/tasks/save}" +" ,{body: " + task + "}];");
-        task = taskService.save(task);
+        try {
+            task = taskService.save(task);
+        } catch (ChangeSetPersister.NotFoundException exception) {
+            exception.printStackTrace();
+        }
         return task!=null
                 ? ResponseEntity.created(URI.create("/api/tasks/save")).body(task)
                 : ResponseEntity.badRequest().body(new Task());

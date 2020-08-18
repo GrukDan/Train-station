@@ -92,7 +92,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   addTask(task: Task) {
-
     this.subscriptions.push(
       this.selectExpertsById(this.collectSelectedIds())
         .subscribe(selectedExperts=>{
@@ -100,7 +99,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
           task.taskCreator = 16;
           task.dateOfCreation = new Date();
-          console.log(task);
           this.subscriptions.push(this.taskService.save(task).subscribe());
           this.taskForm.reset();
           this.modalWindowService.closeModal();
@@ -176,7 +174,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   valueChanged(checked: boolean, value: any, index: number) {
     checked ? this.selectedExperts[index] = value : this.selectedExperts[index] = -1;
   }
-
 
   collectSelectedIds():number[]{
     return this.selectedExperts.filter(id=>id>0);

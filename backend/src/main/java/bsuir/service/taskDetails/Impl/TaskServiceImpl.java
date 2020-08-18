@@ -10,6 +10,7 @@ import bsuir.repository.taskDetails.TaskRepository;
 import bsuir.service.taskDetails.StatusService;
 import bsuir.service.taskDetails.TaskService;
 import bsuir.service.userDetails.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
@@ -17,12 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -35,19 +34,36 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PassayGenerator passayGenerator;
+
     private String[] parameters;
 
     {
         parameters = new String[]{"taskName", "task_code", "status","date_of_creation", "task_creator"};
     }
 
-    @Override
-    public Task save(Task task) {
-        PassayGenerator passayGenerator = new PassayGenerator();
-        String code = task.getTaskName() + '-' +
+    private void setTaskCode(Task task){
+        String taskCode = task.getTaskName() + '-' +
                 passayGenerator.generateAlphabetCode(4);
-        task.setTaskCode(code);
-        return taskRepository.save(task);
+        task.setTaskCode(taskCode);
+    }
+
+    @Override
+    public Task save(Task task) throws ChangeSetPersister.NotFoundException {
+        setTaskCode(task);
+        List<User> users = userService.getUsersById(task.collectUserIds());
+        taskRepository.save(task);
+        Task savedTask = taskRepository
+                .findByTaskCode(task.getTaskCode())
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        Set<Task> tasks = new HashSet<Task>();
+        tasks.add(savedTask);
+        users.forEach(user -> {
+            user.setTasks(tasks);
+        });
+        userService.saveAll(users);
+        return savedTask;
     }
 
     @Override

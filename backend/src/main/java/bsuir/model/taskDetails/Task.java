@@ -9,19 +9,19 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "task", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
 
     @Id
     @Column(name = "id_task", nullable = false)
-    @EqualsAndHashCode.Include
     private long idTask;
 
     @Basic
@@ -34,12 +34,10 @@ public class Task {
 
     @Basic
     @Column(name = "task_name", nullable = false, length = 45)
-    @EqualsAndHashCode.Include
     private String taskName;
 
     @Basic
     @Column(name = "task_code", nullable = false, length = 45)
-    @EqualsAndHashCode.Include
     private String taskCode;
 
     @Basic
@@ -51,7 +49,6 @@ public class Task {
     private long status;
 
     @JsonIgnore
-    @ToString.Exclude
     @ManyToMany(mappedBy = "tasks")
     private Set<User> users;
 
@@ -130,5 +127,44 @@ public class Task {
     @JsonIgnore
     public Set<User> getUsers() {
         return users;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return idTask == task.idTask &&
+                taskCreator == task.taskCreator &&
+                status == task.status &&
+                dateOfCreation.equals(task.dateOfCreation) &&
+                taskName.equals(task.taskName) &&
+                taskCode.equals(task.taskCode) &&
+                Objects.equals(description, task.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idTask, taskCreator, dateOfCreation, taskName, taskCode, description, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "idTask=" + idTask +
+                ", taskCreator=" + taskCreator +
+                ", dateOfCreation=" + dateOfCreation +
+                ", taskName='" + taskName + '\'' +
+                ", taskCode='" + taskCode + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", users=" + users.toString() +
+                '}';
+    }
+
+    public List<Long> collectUserIds(){
+        return users.stream()
+                .map(User::getIdUser)
+                .collect(Collectors.toList());
     }
 }

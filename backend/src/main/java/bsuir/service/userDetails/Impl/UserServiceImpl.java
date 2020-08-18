@@ -66,15 +66,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) throws NullPointerException {
-        if (user != null) {
-            Optional<User> userOptional = userRepository.findById(user.getIdUser());
-            if (!userOptional.isPresent())
-                throw new NullPointerException("Data for " + user.getName() + " not found");
-            user.setPassword(userOptional.get().getPassword());
-        }
-        //todo:
-        user = userRepository.save(user);
-        return null;
+        User savedUser = userRepository.findById(user.getIdUser()).orElseThrow(NullPointerException::new);
+        user.setPassword(savedUser.getPassword());
+        user.setRoles(savedUser.getRoles());
+        return userRepository.save(savedUser.update(user));
     }
 
     @Override
@@ -99,9 +94,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllById(ids);
     }
 
-
     @Override
     public List<User> getExperts() {
         return userRepository.findAllByRoleName("EXPERT");
+    }
+
+    @Override
+    public List<User> saveAll(List<User> users) {
+        return userRepository.saveAll(users);
     }
 }

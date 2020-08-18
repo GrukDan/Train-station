@@ -3,11 +3,12 @@ package bsuir.service.taskDetails;
 import bsuir.model.pageModel.TaskPage;
 import bsuir.model.taskDetails.Task;
 import bsuir.model.viewModel.TaskViewModel;
+import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.List;
 
 public interface TaskService {
-    Task save(Task task);
+    Task save(Task task) throws ChangeSetPersister.NotFoundException;
 
     void delete(long id);
 

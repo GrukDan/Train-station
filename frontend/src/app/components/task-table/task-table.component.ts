@@ -14,9 +14,8 @@ import {TaskViewModel} from "../../models/view-models/task-view-model";
 export class TaskTableComponent implements OnInit,OnDestroy {
 
   taskViewModels:TaskViewModel[] = [];
-
   taskViewModel:TaskViewModel;
-
+  taskExecutors:User[] = [];
   parameters:string[] = [];
 
   size:number = 7;
@@ -76,4 +75,7 @@ export class TaskTableComponent implements OnInit,OnDestroy {
     }))
   }
 
+  private loadTaskExecutors(idTask:number){
+
+  }
 }

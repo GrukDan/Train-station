@@ -57,15 +57,30 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private Set<Task> tasks;
 
-    public User(@NonNull User user){
-            this.idUser = user.idUser;
-            this.name = user.name;
-            this.surname = user.surname;
-            this.email = user.email;
-            this.password = user.password;
+    public static User instance(@NonNull User user) {
+        User instance = new User();
+        instance.idUser = user.idUser;
+        instance.name = user.name;
+        instance.surname = user.surname;
+        instance.email = user.email;
+        instance.password = user.password;
+        instance.roles = user.roles;
+        instance.tasks = user.tasks;
+        return instance;
     }
 
-    public void forgetPassword(){
+    public User update(@NonNull User user){
+        this.idUser = user.idUser;
+        this.name = user.name;
+        this.surname = user.surname;
+        this.email = user.email;
+        this.password = user.password;
+        this.roles = user.roles;
+        this.tasks = user.tasks;
+        return this;
+    }
+
+    public void forgetPassword() {
         password = null;
     }
 }

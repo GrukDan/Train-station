@@ -22,4 +22,6 @@ public interface UserService {
     List<User> getUsersById(List<Long> ids);
 
     List<User> getExperts();
+
+    List<User> saveAll(List<User> users);
 }
