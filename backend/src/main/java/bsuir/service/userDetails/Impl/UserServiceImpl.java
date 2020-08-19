@@ -100,6 +100,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllByTaskId(Long idTask) {
+        List<User> users = userRepository.findAllByTaskId(idTask);
+        users.forEach(User::forgetPassword);
+        return users;
+    }
+
+    @Override
     public List<User> saveAll(List<User> users) {
         return userRepository.saveAll(users);
     }

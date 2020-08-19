@@ -40,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
     private String[] parameters;
 
     {
-        parameters = new String[]{"taskName", "task_code", "status","date_of_creation", "task_creator"};
+        parameters = new String[]{"taskName", "taskCode", "status","dateOfCreation", "taskCreator"};
     }
 
     private void setTaskCode(Task task){

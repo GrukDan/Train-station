@@ -7,6 +7,7 @@ import bsuir.model.viewModel.TaskViewModel;
 import bsuir.service.taskDetails.StatusService;
 import bsuir.service.taskDetails.TaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.common.reflection.XMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
@@ -59,5 +60,11 @@ public class TaskController {
         return taskViewModel!=null
                 ? ResponseEntity.ok(taskViewModel)
                 : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping(value = "/{idTask}")
+    public void delete(@PathVariable("idTask")Long idTask){
+        log.info(String.format("DELETE request [{URL: /api/tasks/{%s}];",idTask));
+        taskService.delete(idTask);
     }
 }

@@ -50,4 +50,8 @@ export class TaskService {
           .set('parameter', parameter)
       });
   }
+
+  public delete(idTask:number):Observable<{}>{
+    return this.http.delete(this.url  + `/${idTask}`)
+  }
 }

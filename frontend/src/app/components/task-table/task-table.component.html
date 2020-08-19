@@ -8,11 +8,11 @@
             <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col" (click)="sort(direction,parameters[0])">Task</th>
-              <th scope="col" (click)="sort(direction,parameters[1])">Code</th>
-              <th scope="col" (click)="sort(direction,parameters[2])">Status</th>
-              <th scope="col" (click)="sort(direction,parameters[3])">Date of creation</th>
-              <th scope="col" (click)="sort(direction,parameters[4])">Task creator</th>
+              <th scope="col" class="pointer-cursor" (click)="sort(direction,parameters[0])">Task</th>
+              <th scope="col" class="pointer-cursor" (click)="sort(direction,parameters[1])">Code</th>
+              <th scope="col" class="pointer-cursor" (click)="sort(direction,parameters[2])">Status</th>
+              <th scope="col" class="pointer-cursor" (click)="sort(direction,parameters[3])">Date of creation</th>
+              <th scope="col" class="pointer-cursor" (click)="sort(direction,parameters[4])">Task creator</th>
               <th scope="col">More</th>
             </tr>
             </thead>
@@ -66,12 +66,15 @@
           <h3>Task creator:</h3>
           <span class="h4 text-monospace">{{taskViewModel.taskCreatorSurname}} {{taskViewModel.taskCreatorName}}</span>
           <h3>Task executors:</h3>
-          <ul>
+          <ul *ngIf="taskExecutors.length">
           <li
-            *ngFor="let executor of taskViewModel?.users;let i = index"
+            *ngFor="let executor of taskExecutors;let i = index"
             [value]="executor.idUser"
-            class="h4 text-monospace">{{executor.surname}} {{executor.name}}</li>
+            class="h4 text-monospace">
+            <a routerLinkActive="active" routerLink="">{{executor.surname}} {{executor.name}}</a>
+          </li>
           </ul>
+          <span *ngIf="!taskExecutors.length"><i>No executors!</i></span>
         </div>
       </div>
       <div
@@ -79,6 +82,12 @@
         class="mt-2">
         <h3>Description:</h3>
         <p class="text-monospace">{{taskViewModel.description}}</p>
+      </div>
+      <div *ngIf="taskViewModel" class="mt-3">
+        <span>
+          <button class="btn btn-danger" (click)="deleteTask(taskViewModel.idTask)">Delete <i class="fa fa-trash-o"></i></button>
+          <button class="btn btn-primary ml-3">Edit <i class="fa fa-edit"></i></button>
+        </span>
       </div>
     </div>
   </div>

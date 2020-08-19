@@ -88,4 +88,9 @@ public class UserController {
     public ResponseEntity<List<User>> getExperts(){
         return ResponseEntity.ok(userService.getExperts());
     }
+
+    @RequestMapping(value = "/get-by-task",method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getAllByTaskId(@RequestParam("idTask")Long idTask){
+        return ResponseEntity.ok(userService.getAllByTaskId(idTask));
+    }
 }

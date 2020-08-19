@@ -19,6 +19,15 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findByEmailAndPassword(String email, String password);
 
     @Query(value = "SELECT * FROM user u " +
+            "JOIN user_tasks u_t " +
+            "ON u.id_user = u_t.user_id " +
+            "JOIN task t " +
+            "ON t.id_task = u_t.task_id " +
+            "WHERE t.id_task = :idTask",
+            nativeQuery = true)
+    List<User> findAllByTaskId(@Param("idTask") Long idTask);
+
+    @Query(value = "SELECT * FROM user u " +
             "JOIN user_roles u_r " +
             "ON u.id_user = u_r.user_id " +
             "JOIN role r " +

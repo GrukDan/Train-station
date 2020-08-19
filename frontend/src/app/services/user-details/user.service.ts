@@ -59,4 +59,11 @@ export class UserService {
   getExperts():Observable<User[]> {
     return this.http.get<User[]>(this.url + '/get-experts');
   }
+
+  getAllByTaskId(idTask:number):Observable<User[]>{
+    return this.http.get<User[]>(this.url + '/get-by-task',{
+      params:new HttpParams()
+        .set('idTask',idTask.toString())
+    })
+  }
 }

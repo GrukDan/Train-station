@@ -23,5 +23,7 @@ public interface UserService {
 
     List<User> getExperts();
 
+    List<User> getAllByTaskId(Long idTask);
+
     List<User> saveAll(List<User> users);
 }

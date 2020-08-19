@@ -5,6 +5,7 @@ import {PageChangedEvent} from "ngx-bootstrap/pagination";
 import {User} from "../../models/user-details/user";
 import {Task} from "../../models/task-details/task";
 import {TaskViewModel} from "../../models/view-models/task-view-model";
+import {UserService} from "../../services/user-details/user.service";
 
 @Component({
   selector: 'app-task-table',
@@ -18,6 +19,7 @@ export class TaskTableComponent implements OnInit,OnDestroy {
   taskExecutors:User[] = [];
   parameters:string[] = [];
 
+  page:number = 0;
   size:number = 7;
   totalElements:number = 0;
   direction:boolean = false;
@@ -25,7 +27,8 @@ export class TaskTableComponent implements OnInit,OnDestroy {
 
   subscriptions:Subscription[] = [];
 
-  constructor(private taskService:TaskService) { }
+  constructor(private taskService:TaskService,
+              private userService:UserService) { }
 
   ngOnInit() {
     this.loadParameters();
@@ -38,7 +41,7 @@ export class TaskTableComponent implements OnInit,OnDestroy {
   loadParameters() {
     this.subscriptions.push(this.taskService.getParameters().subscribe(parameters=>{
       this.parameters = parameters as string[];
-      this.loadPage(0,this.size,this.direction,this.parameters[0]);
+      this.loadPage(this.page,this.size,this.direction,this.parameters[0]);
     }))
   }
 
@@ -50,7 +53,8 @@ export class TaskTableComponent implements OnInit,OnDestroy {
   }
 
   pageChanged($event: PageChangedEvent) {
-    this.loadPage($event.page - 1,this.size,this.direction,this.parameters[0]);
+    this.page = $event.page - 1;
+    this.loadPage(this.page,this.size,this.direction,this.parameters[0]);
   }
 
   changeDirection(){
@@ -58,12 +62,14 @@ export class TaskTableComponent implements OnInit,OnDestroy {
   }
 
   sort(direction: boolean,parameter:string) {
+    this.parameter = parameter;
     this.changeDirection();
-    this.loadPage(0,this.size,this.direction,parameter);
+    this.loadPage(this.page,this.size,this.direction,this.parameter);
   }
 
   showTask(idTask: number) {
     this.loadTaskById(idTask);
+    this.loadTaskExecutors(idTask);
   }
 
   private loadTaskById(idTask: number) {
@@ -76,6 +82,19 @@ export class TaskTableComponent implements OnInit,OnDestroy {
   }
 
   private loadTaskExecutors(idTask:number){
+    this.subscriptions.push(this.userService
+      .getAllByTaskId(idTask)
+      .subscribe(users=>{
+        this.taskExecutors = users as User[];
+    }))
+  }
 
+  deleteTask(idTask: number) {
+    this.subscriptions.push(this.taskService
+      .delete(idTask)
+      .subscribe(()=>{
+        this.taskViewModel = null;
+        this.loadPage(this.page,this.size,this.direction,this.parameter);
+      }))
   }
 }
