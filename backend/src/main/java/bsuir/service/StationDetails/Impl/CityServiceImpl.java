@@ -13,8 +13,11 @@ import java.util.List;
 @Service
 public class CityServiceImpl implements CityService {
 
-    @Autowired
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
+
+    public CityServiceImpl(CityRepository cityRepository) {
+        this.cityRepository = cityRepository;
+    }
 
     @Override
     public City save(City city) {

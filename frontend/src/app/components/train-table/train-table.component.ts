@@ -420,4 +420,10 @@ export class TrainTableComponent implements OnInit, OnDestroy {
   buildTrainNodes(): any[] {
     return this.buildTrainModelsRoot();
   }
+
+  clickCityForStation(value: string) {
+    console.log(value)
+    this.station.city = Number(value);
+    console.log(this.station)
+  }
 }

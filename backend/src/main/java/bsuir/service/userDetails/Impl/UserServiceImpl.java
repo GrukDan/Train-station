@@ -31,14 +31,17 @@ public class UserServiceImpl implements UserService {
         parameters = new String[]{"name", "surname", "email"};
     }
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
-    @Autowired
-    private PassayGenerator passayGenerator;
+    private final PassayGenerator passayGenerator;
+
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PassayGenerator passayGenerator) {
+        this.userRepository = userRepository;
+        this.roleService = roleService;
+        this.passayGenerator = passayGenerator;
+    }
 
     @Override
     public User save(User user) {
@@ -48,9 +51,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         user = userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
         user.setRoles(role);
-
-        log.info("Save new user: " + user);
-
         return userRepository.save(user);
     }
 

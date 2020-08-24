@@ -1,13 +1,22 @@
 package bsuir.service.taskDetails.Impl;
 
 import bsuir.model.taskDetails.Alternative;
+import bsuir.repository.taskDetails.AlternativeRepository;
 import bsuir.service.taskDetails.AlternativeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AlternativeServiceImpl implements AlternativeService {
+
+    private final AlternativeRepository alternativeRepository;
+
+    public AlternativeServiceImpl(AlternativeRepository alternativeRepository) {
+        this.alternativeRepository = alternativeRepository;
+    }
+
     @Override
     public Alternative save(Alternative alternative) {
         return null;

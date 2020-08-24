@@ -21,8 +21,11 @@ import java.util.List;
 @RequestMapping(value = "/api/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.PUT)
     private ResponseEntity<Task> save(@RequestBody Task task){

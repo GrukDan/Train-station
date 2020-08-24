@@ -19,4 +19,6 @@ public interface CountryService {
     List<Country> getPageSorted(int page, int size, String parameter, boolean direction,String search);
 
     List<Country> getAllByIdIn(List<Long> ids);
+
+    List<Country> getLimitOrderedByCountry(int limit);
 }

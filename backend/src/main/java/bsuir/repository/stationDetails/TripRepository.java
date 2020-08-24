@@ -16,4 +16,6 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
     List<Trip> findAllByDepartureStation(long departureStation);
 
     List<Trip> findAllByDepartureStationAndArrivalStation(long departureStation, long arrivalStation);
+
+
 }

@@ -14,8 +14,11 @@ import java.util.List;
 @Service
 public class StatusServiceImpl implements StatusService {
 
-    @Autowired
-    private StatusRepository statusRepository;
+    private final StatusRepository statusRepository;
+
+    public StatusServiceImpl(StatusRepository statusRepository) {
+        this.statusRepository = statusRepository;
+    }
 
     @Override
     public Status getById(long id) throws NotFoundException {

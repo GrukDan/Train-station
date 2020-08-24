@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/api/train-models")
 public class TrainModelController {
 
-    @Autowired
-    private TrainModelService trainModelService;
+    private final TrainModelService trainModelService;
+
+    public TrainModelController(TrainModelService trainModelService) {
+        this.trainModelService = trainModelService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<TrainModel> save(@RequestBody TrainModel trainModel){

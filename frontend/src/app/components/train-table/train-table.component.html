@@ -258,9 +258,11 @@
                 name="city"
                 formControlName="city"
                 #cityForStation
+                (ngModelChange)="clickCityForStation(cityForStation.value)"
                 [(ngModel)]="station.city">
           <option *ngFor="let city of cities"
-                  [value]="city.idCity">{{city.city}}</option>
+                  [value]="city.idCity">{{city.city}}
+          </option>
         </select>
         <div *ngIf="_cityForStation.invalid && (_cityForStation.touched || _cityForStation.dirty)"
              class="alert alert-danger">

@@ -12,14 +12,12 @@ public class PassayGenerator {
         CharacterRule alphabetical = new CharacterRule(EnglishCharacterData.Alphabetical);
 
         PasswordGenerator passwordGenerator = new PasswordGenerator();
-        String password = passwordGenerator.generatePassword(6, digits,alphabetical);
-        return password;
+        return passwordGenerator.generatePassword(6, digits,alphabetical);
     }
 
     public String generateAlphabetCode(int length){
         CharacterRule alphabetical = new CharacterRule(EnglishCharacterData.Alphabetical);
         PasswordGenerator codeGenerator = new PasswordGenerator();
-        String code = codeGenerator.generatePassword(length,alphabetical);
-        return code;
+        return codeGenerator.generatePassword(length,alphabetical);
     }
 }

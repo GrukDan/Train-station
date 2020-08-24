@@ -15,8 +15,11 @@ import java.util.List;
 @RequestMapping("/api/stations")
 public class StationController {
 
-    @Autowired
-    private StationService stationService;
+    private final StationService stationService;
+
+    public StationController(StationService stationService) {
+        this.stationService = stationService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<Station> save(@RequestBody Station station){

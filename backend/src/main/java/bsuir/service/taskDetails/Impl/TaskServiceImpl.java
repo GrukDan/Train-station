@@ -10,6 +10,7 @@ import bsuir.repository.taskDetails.TaskRepository;
 import bsuir.service.taskDetails.StatusService;
 import bsuir.service.taskDetails.TaskService;
 import bsuir.service.userDetails.UserService;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -25,16 +26,16 @@ import java.util.stream.Collectors;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private TaskRepository taskRepository;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private StatusService statusService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private UserService userService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private PassayGenerator passayGenerator;
 
     private String[] parameters;

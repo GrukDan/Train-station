@@ -15,6 +15,7 @@ import {FormGroup} from "@angular/forms";
 import {ValidationService} from "../../services/reactive-forms/validation.service";
 import {TripService} from "../../services/station-details/trip.service";
 import {TripRecord} from "../../models/view-models/trip-record";
+import {Alternative} from "../../models/task-details/alternative";
 
 
 @Component({
@@ -37,8 +38,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   tripRecords: TripRecord[] = [];
 
   experts: User[] = [];
-  selectedExperts: Array<number>;
+  selectedExperts: number[] = [];
   expertsNumber: number = 0;
+
+  alternatives: Alternative[] = [];
+  selectedTrips: number[] = [];
+
+  page: number = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -59,17 +65,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  openCreateUserModal(template: TemplateRef<any>) {
+  openUserModal(template: TemplateRef<any>) {
     this.createVoidUserForm();
     this.modalWindowService.openModal(template);
     this.loadRoles();
   }
 
-  openCreateTaskModal(template: TemplateRef<any>) {
+  openTaskModal(template: TemplateRef<any>) {
     this.createVoidTaskForm();
     this.modalWindowService.openModal(template);
     this.loadStatuses();
     this.loadExperts();
+    this.loadTrips();
   }
 
   loadRoles() {
@@ -93,8 +100,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   addTask(task: Task) {
     this.subscriptions.push(
-      this.selectExpertsById(this.collectSelectedIds())
-        .subscribe(selectedExperts=>{
+      this.selectExpertsById(this.collectSelectedIds(this.selectedExperts))
+        .subscribe(selectedExperts => {
           task.users = selectedExperts;
 
           task.taskCreator = 16;
@@ -102,7 +109,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.subscriptions.push(this.taskService.save(task).subscribe());
           this.taskForm.reset();
           this.modalWindowService.closeModal();
-      })
+        })
     );
   }
 
@@ -119,6 +126,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.taskForm.get('taskCreator').clearValidators();
     this.task = new Task();
     this.statuses = [];
+    this.tripRecords = [];
+    this.experts = [];
   }
 
   get _userName() {
@@ -137,14 +146,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.userForm.get('role');
   }
 
-  get _taskCreator() {
-    return this.taskForm.get('taskCreator');
-  }
-
-  get _dateOfCreation() {
-    return this.taskForm.get('dateOfCreation');
-  }
-
   get _taskName() {
     return this.taskForm.get('taskName');
   }
@@ -157,29 +158,41 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.taskForm.get('status');
   }
 
-
   loadTrips() {
-
+    this.subscriptions.push(
+      this.tripService
+        .getTripRecordsLimitOrderedByCountry(this.page)
+        .subscribe(tripRecords => {
+          this.tripRecords = this.tripRecords.concat(tripRecords);
+        }))
   }
 
   loadExperts() {
-    this.subscriptions.push(this.userService.getExperts().subscribe(experts => {
-      this.experts = experts as User[];
-      this.expertsNumber = this.experts.length;
-      this.selectedExperts = (new Array<number>(this.expertsNumber)).fill(-1);
-    }))
+    this.subscriptions.push(
+      this.userService
+        .getExperts()
+        .subscribe(experts => {
+          this.experts = experts as User[];
+          this.expertsNumber = this.experts.length;
+          this.selectedExperts = (new Array<number>(this.expertsNumber)).fill(-1);
+        }))
   }
 
 
-  valueChanged(checked: boolean, value: any, index: number) {
-    checked ? this.selectedExperts[index] = value : this.selectedExperts[index] = -1;
+  valueChanged(selected: number[], checked: boolean, value: any, index: number) {
+    checked ? selected[index] = value : this.selectedExperts[index] = -1;
   }
 
-  collectSelectedIds():number[]{
-    return this.selectedExperts.filter(id=>id>0);
+  collectSelectedIds(selected: number[]): number[] {
+    return selected.filter(id => id > 0);
   }
 
-  selectExpertsById(ids:number[]):Observable<User[]>{
-    return of(this.experts.filter(expert=>ids.some(id=> id == expert.idUser)));
+  selectExpertsById(ids: number[]): Observable<User[]> {
+    return of(this.experts.filter(expert => ids.some(id => id == expert.idUser)));
+  }
+
+  loadMoreTrips() {
+    this.page++;
+    this.loadTrips();
   }
 }

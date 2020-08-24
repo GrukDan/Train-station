@@ -5,6 +5,7 @@ import bsuir.repository.stationDetails.CountryRepository;
 import bsuir.service.StationDetails.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,11 @@ import java.util.List;
 @Service
 public class CountryServiceImpl implements CountryService {
 
-    @Autowired
-    private CountryRepository countryRepository;
+    private final CountryRepository countryRepository;
+
+    public CountryServiceImpl(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
+    }
 
     @Override
     public Country save(Country country) {
@@ -51,5 +55,12 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public List<Country> getAllByIdIn(List<Long> ids) {
         return countryRepository.findAllById(ids);
+    }
+
+    @Override
+    public List<Country> getLimitOrderedByCountry(int limit) {
+        return countryRepository
+                .findAll(PageRequest.of(0,limit, Sort.by(Sort.Direction.ASC,"country")))
+                .getContent();
     }
 }

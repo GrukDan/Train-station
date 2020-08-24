@@ -17,8 +17,11 @@ import java.util.List;
 @RequestMapping("/api/statuses")
 public class StatusController {
 
-    @Autowired
-    private StatusService statusService;
+    private final StatusService statusService;
+
+    public StatusController(StatusService statusService) {
+        this.statusService = statusService;
+    }
 
     @RequestMapping(value = "/get-all",method = RequestMethod.GET)
     public ResponseEntity<List<Status>> getAll(){

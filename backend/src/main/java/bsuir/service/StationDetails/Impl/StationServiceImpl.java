@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class StationServiceImpl implements StationService {
 
-    @Autowired
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
+
+    public StationServiceImpl(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
+    }
 
     @Override
     public Station save(Station station) {

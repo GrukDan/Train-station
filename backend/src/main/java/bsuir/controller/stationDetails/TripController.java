@@ -18,8 +18,11 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/trips")
 public class TripController {
 
-    @Autowired
-    private TripService tripService;
+    private final TripService tripService;
+
+    public TripController(TripService tripService) {
+        this.tripService = tripService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<Trip> save(@RequestBody Trip trip){
@@ -55,8 +58,8 @@ public class TripController {
     @RequestMapping(value = "/get-page",method = RequestMethod.GET)
     public ResponseEntity<TripPage> getPage(@RequestParam("page") int page,
                                             @RequestParam("size") int size,
-                                            @RequestParam("direction") boolean direction,
-                                            @RequestParam("parameter") String parameter){
+                                            @RequestParam(value = "direction",defaultValue = "true") boolean direction,
+                                            @RequestParam(value = "parameter",defaultValue = "idTrip") String parameter){
         log.info("GET request [{URL: " +"/api/trips/get-page}];");
         return ok(tripService.getPage(page,size,direction,parameter));
     }
@@ -65,5 +68,15 @@ public class TripController {
     public ResponseEntity<List<TripRecord>> getAllTripRecords(){
         log.info("GET request [{URL: " +"/api/trips/get-all/trip-record}];");
         return ResponseEntity.ok(tripService.getAllTripRecords());
+    }
+
+    @RequestMapping(value = "/get-limit",method = RequestMethod.GET)
+    public ResponseEntity<List<TripRecord>> getTripRecordsLimitOrderedByCountry(
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "5") int size,
+            @RequestParam(value = "direction", defaultValue = "true") boolean direction,
+            @RequestParam(value = "parameter",defaultValue = "idTrip") String parameter
+    ){
+        return ResponseEntity.ok(tripService.getPage(page,size,direction,parameter).getTripRecords());
     }
 }

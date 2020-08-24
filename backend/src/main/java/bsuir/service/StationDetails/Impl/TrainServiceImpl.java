@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class TrainServiceImpl implements TrainService {
 
-    @Autowired
-    private TrainRepository trainRepository;
+    private final TrainRepository trainRepository;
+
+    public TrainServiceImpl(TrainRepository trainRepository) {
+        this.trainRepository = trainRepository;
+    }
 
     @Override
     public Train save(Train train) {

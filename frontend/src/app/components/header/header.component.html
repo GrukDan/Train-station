@@ -14,11 +14,11 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="btn nav-item text-white nav-link mr-2"
-         (click)="openCreateUserModal(newUser)">New user
+         (click)="openUserModal(newUser)">New user
         <i class="fa fa-user-plus"></i>
       </a>
       <a class="btn nav-item text-white nav-link mr-2"
-         (click)="openCreateTaskModal(newTask)">New task
+         (click)="openTaskModal(newTask)">New task
         <i class="fa fa-tag"></i>
       </a>
       <a class="nav-item text-white nav-link mr-2"
@@ -136,7 +136,9 @@
   <div class="modal-body">
     <form [formGroup]="taskForm" novalidate>
       <div class="form-group">
-        <label for="taskName">Task name</label>
+        <label for="taskName">
+          <b>Task name</b>
+        </label>
         <input type="text"
                class="form-control"
                id="taskName"
@@ -150,20 +152,10 @@
           <p *ngIf="_taskName.errors?.pattern">The word had invalid symbols</p>
         </div>
       </div>
-      <!--      <div *ngIf="experts.length" class="form-group">-->
-      <!--        <span for="formControlRange">Number of experts: {{expertsNumber}}</span>-->
-      <!--        <input type="range"-->
-      <!--               min="1"-->
-      <!--               [max]="experts.length"-->
-      <!--               value="30"-->
-      <!--               (input)="valueChanged($event.target.value)"-->
-      <!--               class="form-control-range"-->
-      <!--               id="formControlRange"-->
-      <!--               formControlName="numberOfExperts">-->
-      <!--      </div>-->
-
+      <p>
+        <b>Experts for task</b>
+      </p>
       <div *ngIf="expertsNumber > 0">
-        <p>Experts for task</p>
         <ol>
           <li *ngFor="let expert of experts;let i = index;">
             <div class="form-check">
@@ -172,7 +164,7 @@
                   class="form-check-input"
                   type="checkbox"
                   [value]="expert.idUser"
-                  (change)="valueChanged($event.target.checked,$event.target.value,i)">
+                  (change)="valueChanged(selectedExperts,$event.target.checked,$event.target.value,i)">
                 {{expert.surname}} {{expert.name}}
               </label>
             </div>
@@ -197,6 +189,35 @@
           <p *ngIf="_status.errors?.required">This field is required</p>
         </div>
       </div>
+      <div class="form-group mt-5">
+        <p>
+          <b>Alternatives</b>
+        </p>
+        <div *ngIf="tripRecords.length">
+          <ol class="no-marker">
+            <li *ngFor="let tripRecord of tripRecords;let i = index">
+              <div class="form-check">
+                <label class="form-check-label"
+                       [tooltip]="tripRecord.trainModelObj.model"
+                       placement="auto">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [value]="tripRecord.idTrip"
+                    (change)="valueChanged(selectedTrips,$event.target.checked,$event.target.value,i)">
+                  {{tripRecord.departureCountryObj.country + '/' + tripRecord.departureCityObj.city + '/' + tripRecord.departureStationObj.station}}
+                  <b>&#x21D2;</b>
+                  {{tripRecord.arrivalCountryObj.country + '/' + tripRecord.arrivalCityObj.city + '/' + tripRecord.arrivalStationObj.station}}
+                </label>
+              </div>
+            </li>
+          </ol>
+          <button class="btn btn-primary" (click)="loadMoreTrips()">Load more trips</button>
+        </div>
+      </div>
+      <p *ngIf="!tripRecords.length">
+        No trips...
+      </p>
       <div class="form-group mt-5">
         <label for="description">Description</label>
         <textarea class="form-control"

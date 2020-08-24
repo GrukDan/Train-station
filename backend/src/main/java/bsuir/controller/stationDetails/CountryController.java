@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/api/countries")
 public class CountryController {
 
-    @Autowired
-    private CountryService countryService;
+    private final CountryService countryService;
+
+    public CountryController(CountryService countryService) {
+        this.countryService = countryService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<Country> save(@RequestBody Country country){

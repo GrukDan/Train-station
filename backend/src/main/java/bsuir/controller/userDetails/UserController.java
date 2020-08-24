@@ -21,8 +21,11 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     private HttpHeaders createHeaders(String header, String content) {
         HttpHeaders headers = new HttpHeaders();
@@ -65,7 +68,7 @@ public class UserController {
         }
         return user != null ?
                 ResponseEntity.ok(user)
-                : ResponseEntity.badRequest().body(user);
+                : ResponseEntity.badRequest().body(new User());
     }
 
     @RequestMapping(value = "/get-parameters", method = RequestMethod.GET)

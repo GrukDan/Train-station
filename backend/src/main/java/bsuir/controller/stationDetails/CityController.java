@@ -15,8 +15,11 @@ import java.util.List;
 @RequestMapping("/api/cities")
 public class CityController {
 
-    @Autowired
-    private CityService cityService;
+    private final CityService cityService;
+
+    public CityController(CityService cityService) {
+        this.cityService = cityService;
+    }
 
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<City> save(@RequestBody City city){

@@ -5,11 +5,11 @@ import bsuir.model.stationDetails.*;
 import bsuir.model.viewModel.TripRecord;
 import bsuir.repository.stationDetails.TripRepository;
 import bsuir.service.StationDetails.*;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,22 +19,22 @@ import java.util.stream.Collectors;
 @Service
 public class TripServiceImpl implements TripService {
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private TripRepository tripRepository;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private CountryService countryService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private CityService cityService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private StationService stationService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private TrainService trainService;
 
-    @Autowired
+    @Setter(onMethod=@__({@Autowired}))
     private TrainModelService trainModelService;
 
     @Override
@@ -80,11 +80,11 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripPage getPage(int page, int size, boolean direction, String parameter) {
         Page<Trip> tripsPage = getPageSorted(page, size, parameter, direction);
-        List<TripRecord> tripRecords = buildPageContent(tripsPage.getContent());
+        List<TripRecord> tripRecords = buildTripRecords(tripsPage.getContent());
         return new TripPage(page, size, tripsPage.getTotalElements(), direction, parameter, tripRecords);
     }
 
-    private List<TripRecord> buildPageContent(List<Trip> trips) {
+    private List<TripRecord> buildTripRecords(List<Trip> trips) {
         List<TripRecord> tripRecords = new ArrayList<>();
         trips.forEach(trip -> {
             tripRecords.add(new TripRecord(trip));
@@ -310,4 +310,5 @@ public class TripServiceImpl implements TripService {
     public List<TripRecord> getAllTripRecords() {
         return null;
     }
+
 }

@@ -19,20 +19,36 @@ export class TripService {
     return this.http.post<Trip>(this.url + '/save', trip);
   }
 
-  getPage(page:number = 0,
-          size:number = 5,
-          direction:boolean = false,
-          parameter:string = "id_task"):Observable<TripPage>{
+  getPage(page: number = 0,
+          size: number = 5,
+          direction: boolean = false,
+          parameter: string = "idTrip"): Observable<TripPage> {
     return this.http.get<TripPage>(this.url + '/get-page',
-      {params:new HttpParams()
-          .set('page',page.toString())
-          .set('size',size.toString())
-          .set('direction',String(direction))
-          .set('parameter',parameter)
+      {
+        params: new HttpParams()
+          .set('page', page.toString())
+          .set('size', size.toString())
+          .set('direction', String(direction))
+          .set('parameter', parameter)
       })
   }
 
-  getAll():Observable<TripRecord[]>{
+  getTripRecordsLimitOrderedByCountry(
+    page: number = 0,
+    size: number = 5,
+    direction: boolean = true,
+    parameter: string = "idTrip"): Observable<TripRecord[]> {
+    return this.http.get<TripRecord[]>(this.url + '/get-limit',
+      {
+        params: new HttpParams()
+          .set('page', page.toString())
+          .set('size', size.toString())
+          .set('direction', String(direction))
+          .set('parameter', parameter)
+      })
+  }
+
+  getAll(): Observable<TripRecord[]> {
     return this.http.get<TripRecord[]>(this.url + '/get-all/trip-record');
   }
 }
