@@ -100,7 +100,8 @@
           <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}}
             of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
           <td>
-            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal)">Edit <i class="fa fa-edit"></i></button>
+            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal,tripRecord)">Edit <i class="fa fa-edit"></i>
+            </button>
           </td>
           <td>
             <button class="btn btn-danger">Delete <i class="fa fa-trash-o"></i></button>
@@ -552,26 +553,76 @@
 
 
 <ng-template #editTripModal>
-  <div bsModal #lgModal="bs-modal" class="modal fade">
-    <div class="modal-header">
-      <h4 class="modal-title pull-left">Editing trip</h4>
-      <button type="button"
-              class="close pull-right"
-              aria-label="Close"
-              (click)="modalWindowService.closeModal()">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Editing trip</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalWindowService.closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="h5 mb-3"><b>Departure data</b></p>
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="departureCountry" class="h5">Departure country</label>
+        <select id="departureCountry">
+          <option *ngFor="let country of countries;let i = index"
+                  [selected]="country.idCountry == editableTripRecord.departureCountryObj.idCountry"
+          >{{country.country}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="departureCity" class="h5">Departure city</label>
+        <select id="departureCity">
+          <option *ngFor="let city of cities;let i = index"
+                  [selected]="city.idCity == editableTripRecord.departureCityObj.idCity"
+          >{{city.city}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="departureStation" class="h5">Departure station</label>
+        <select id="departureStation">
+          <option *ngFor="let station of stations;let i = index"
+                  [selected]="station.idStation == editableTripRecord.departureStationObj.idStation">
+            {{station.station}}
+          </option>
+        </select>
+      </div>
     </div>
-    <div class="modal-body">
-
+    <p class="h5 mt-4 mb-3"><b>Arrival data</b></p>
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="arrivalCountry" class="h5">Arrival country</label>
+        <select id="arrivalCountry">
+          <option *ngFor="let country of countries;let i = index"
+                  [selected]="country.idCountry == editableTripRecord.arrivalCountryObj.idCountry">
+            {{country.country}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="arrivalCity" class="h5">Arrival city</label>
+        <select id="arrivalCity">
+          <option *ngFor="let city of cities; let i = index"
+                  [selected]="city.idCity == editableTripRecord.arrivalCityObj.idCity">
+            {{city.city}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <label for="arrivalStation" class="h5">Arrival station</label>
+        <select id="arrivalStation">
+          <option *ngFor="let station of stations;let i = index"
+                  [selected]="station.idStation == editableTripRecord.arrivalStationObj.idStation">
+            {{station.station}}
+          </option>
+        </select>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-      <button class="btn btn-success"
-              [disabled]="countryForm.invalid"
-              (click)="addCountry(country)">
-        Save changes
-      </button>
-    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+    <button class="btn btn-success">Save changes</button>
   </div>
 </ng-template>

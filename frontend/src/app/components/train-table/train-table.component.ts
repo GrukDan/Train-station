@@ -18,7 +18,7 @@ import {TrainService} from "../../services/station-details/train.service";
 import {TripService} from "../../services/station-details/trip.service";
 import {Subscription} from "rxjs";
 import {TripRecord} from "../../models/view-models/trip-record";
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import {ModalDirective} from "ngx-bootstrap/modal";
 
 
 @Component({
@@ -62,6 +62,8 @@ export class TrainTableComponent implements OnInit, OnDestroy {
 
   tripRecords: TripRecord[] = [];
   subscriptions: Subscription[] = [];
+
+  editableTripRecord:TripRecord;
 
   size: number = 7;
   totalElements: number = 0;
@@ -222,9 +224,6 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.modalWindowService.openModal(newCountry);
   }
 
-  openEditTripModal(editTrip: TemplateRef<any>){
-    this.modalWindowService.openModal(editTrip);
-  }
 
   addTrip(trip: Trip) {
     this.subscriptions.push(this.tripService.save(trip).subscribe(
@@ -408,5 +407,11 @@ export class TrainTableComponent implements OnInit, OnDestroy {
 
   clickCityForStation(value: string) {
     this.station.city = Number(value);
+  }
+
+  openEditTripModal(editTripModal: TemplateRef<any>,tripRecord:TripRecord) {
+    this.modalWindowService.openModal(editTripModal);
+    this.modalWindowService.largeModal();
+    this.editableTripRecord = tripRecord;
   }
 }

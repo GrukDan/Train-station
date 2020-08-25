@@ -74,6 +74,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   openTaskModal(template: TemplateRef<any>) {
     this.createVoidTaskForm();
     this.modalWindowService.openModal(template);
+    this.modalWindowService.largeModal();
     this.loadStatuses();
     this.loadExperts();
     this.loadTrips();

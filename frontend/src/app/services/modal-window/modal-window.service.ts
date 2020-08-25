@@ -1,6 +1,5 @@
 import {Injectable, TemplateRef} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
-import {FormGroup} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +8,10 @@ export class ModalWindowService {
 
   modalRef: BsModalRef;
   config = {
-    animated: true
+    animated: true,
   };
 
-  constructor(private modalService: BsModalService,) { }
+  constructor(private modalService: BsModalService) { }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, this.config);
@@ -20,5 +19,13 @@ export class ModalWindowService {
 
   closeModal(){
     this.modalRef.hide()
+  }
+
+  largeModal(){
+    this.modalRef.setClass('modal-lg')
+  }
+
+  smallModal(){
+    this.modalRef.setClass('modal-sm')
   }
 }
