@@ -18,8 +18,7 @@ import {TrainService} from "../../services/station-details/train.service";
 import {TripService} from "../../services/station-details/trip.service";
 import {Subscription} from "rxjs";
 import {TripRecord} from "../../models/view-models/trip-record";
-import {PageChangedEvent} from "ngx-bootstrap/pagination";
-import {logger} from "codelyzer/util/logger";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -68,7 +67,7 @@ export class TrainTableComponent implements OnInit, OnDestroy {
   totalElements: number = 0;
   direction: boolean = false;
   parameter: string;
-  parameters:string[] = [];
+  parameters: string[] = [];
 
   constructor(public modalWindowService: ModalWindowService,
               private validationService: ValidationService,
@@ -93,9 +92,9 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.minDate = new Date("01.01.1965");
     this.maxDate = new Date();
 
+    this.loadAllStations();
     this.loadAllCountries();
     this.loadAllCities();
-    this.loadAllStations();
     this.loadAllTrainModels();
     this.loadAllTrains();
 
@@ -111,13 +110,13 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  changeDirection(){
+  changeDirection() {
     this.direction = !this.direction;
   }
 
-  sort(direction: boolean,parameter:string) {
+  sort(direction: boolean, parameter: string) {
     this.changeDirection();
-    this.loadRecordPage(0,this.size,this.direction,parameter);
+    this.loadRecordPage(0, this.size, this.direction, parameter);
   }
 
   addCountry(country: Country) {
@@ -223,6 +222,10 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.modalWindowService.openModal(newCountry);
   }
 
+  openEditTripModal(editTrip: TemplateRef<any>){
+    this.modalWindowService.openModal(editTrip);
+  }
+
   addTrip(trip: Trip) {
     this.subscriptions.push(this.tripService.save(trip).subscribe(
       () => this.modalWindowService.closeModal()
@@ -255,7 +258,7 @@ export class TrainTableComponent implements OnInit, OnDestroy {
   }
 
   addTrain(train: Train) {
-    this.subscriptions.push(this.trainService.save(train).subscribe(()=>{
+    this.subscriptions.push(this.trainService.save(train).subscribe(() => {
       this.modalWindowService.closeModal();
     }));
   }
@@ -264,7 +267,7 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tripService.getPage(page, size, direction, parameter)
       .subscribe(tripPage => {
         this.tripRecords = tripPage.tripRecords as TripRecord[];
-        this.totalElements = tripPage.totalElements / this.size * 10 ;
+        this.totalElements = tripPage.totalElements / this.size * 10;
       }))
   }
 
@@ -343,87 +346,67 @@ export class TrainTableComponent implements OnInit, OnDestroy {
   }
 
   buildStationChild(city: number): any[] {
-    const stations = this.stations.filter(station => station.city == city);
-    const children = [];
-    stations.forEach(station => {
-      children.push({
-        name: station.station,
-        hasChildren: false,
-        isExpanded: false
+    return this.stations
+      .filter(station => station.city == city)
+      .map(station => {
+        return {
+          name: station.station,
+          hasChildren: false,
+          isExpanded: false
+        }
       })
-    });
-
-    return children;
   }
 
   buildCitiesChild(country: number): any[] {
-    const cities = this.cities.filter(city => city.country == country);
-
-    const childCities = [];
-    cities.forEach(city => {
-      childCities.push({
-        id: city.idCity,
-        name: city.city,
-        hasChildren: false,
-        isExpanded: false,
-        children: this.buildStationChild(city.idCity),
-      })
-    });
-
-    return childCities;
+    return this.cities
+      .filter(city => city.country == country)
+      .map(city => {
+        return {
+          id: city.idCity,
+          name: city.city,
+          hasChildren: false,
+          isExpanded: false,
+          children: this.buildStationChild(city.idCity),
+        }
+      });
   }
 
   buildCountriesRoot(): any[] {
-    const roots = [];
-    this.countries.forEach(country => {
-      roots.push({
-        id: country.idCountry,
-        name: country.country,
-        hasChildren: true,
-        children: this.buildCitiesChild(country.idCountry),
+    return this.countries
+      .map(country => {
+        return {
+          id: country.idCountry,
+          name: country.country,
+          hasChildren: true,
+          children: this.buildCitiesChild(country.idCountry),
+        }
       })
-    });
-
-    return roots;
   }
 
   buildTrainChild(trainModel: number): any[] {
-    const trains = this.trains.filter(train => train.model == trainModel);
-    const children = [];
-    trains.forEach(train => {
-      children.push({
-        name: '№' + train.idTrain + ' of ' + train.dateOfCreation,
-        hasChildren: false,
-        isExpanded: false
-      })
-    });
-    return children;
+    return this.trains
+      .filter(train => train.model == trainModel)
+      .map(train => {
+        return {
+          name: '№' + train.idTrain + ' of ' + train.dateOfCreation,
+          hasChildren: false,
+          isExpanded: false
+        }
+      });
   }
 
   buildTrainModelsRoot(): any[] {
-    const roots = [];
-    this.trainModels.forEach(trainModel => {
-      roots.push({
+    return this.trainModels.map(trainModel => {
+      return {
         id: trainModel.idTrainModel,
         name: trainModel.model,
         hasChildren: true,
         children: this.buildTrainChild(trainModel.idTrainModel),
-      })
-    });
-    return roots;
-  }
-
-  buildStationNodes(): any[] {
-    return this.buildCountriesRoot();
-  }
-
-  buildTrainNodes(): any[] {
-    return this.buildTrainModelsRoot();
+      }
+    })
   }
 
   clickCityForStation(value: string) {
-    console.log(value)
     this.station.city = Number(value);
-    console.log(this.station)
   }
 }

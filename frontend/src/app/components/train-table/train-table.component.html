@@ -55,7 +55,7 @@
         <div class="mt-5">
           <app-tree-station
             header="List of stations"
-            [nodes] = "buildStationNodes()">
+            [nodes]="buildCountriesRoot()">
           </app-tree-station>
         </div>
       </div>
@@ -63,7 +63,7 @@
         <div class="mt-5">
           <app-tree-station
             header="List of trains"
-            [nodes] = "buildTrainNodes()">
+            [nodes]="buildTrainModelsRoot()">
           </app-tree-station>
         </div>
       </div>
@@ -87,8 +87,8 @@
           <td><a>{{i + 1}}</a></td>
           <td>
             <a>{{tripRecord.departureCountryObj.country}}
-            /{{tripRecord.departureCityObj.city}}
-            /{{tripRecord.departureStationObj.station}}
+              /{{tripRecord.departureCityObj.city}}
+              /{{tripRecord.departureStationObj.station}}
             </a>
           </td>
           <td>
@@ -97,12 +97,13 @@
               /{{tripRecord.arrivalStationObj.station}}
             </a>
           </td>
-          <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}} of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
+          <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}}
+            of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
           <td>
-            <button class="btn btn-primary">Edit trip<i class="fa fa-edit"></i></button>
+            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal)">Edit <i class="fa fa-edit"></i></button>
           </td>
           <td>
-            <button class="btn btn-danger">Delete trip <i class="fa fa-trash-o"></i></button>
+            <button class="btn btn-danger">Delete <i class="fa fa-trash-o"></i></button>
           </td>
         </tr>
         </tbody>
@@ -247,7 +248,6 @@
                 #countryForStation
                 (change)="loadAllCitiesByCountry(countryForStation.value)">
           <option *ngFor="let country of countries"
-                  [selected]="true"
                   [value]="country.idCountry">
             {{country.country}}
           </option>
@@ -257,8 +257,9 @@
                 id="cityForStation"
                 name="city"
                 formControlName="city"
-                #cityForStation
-                (ngModelChange)="clickCityForStation(cityForStation.value)"
+                [disabled]="cities?.length==0"
+                #city
+                (click)="clickCityForStation(city.value)"
                 [(ngModel)]="station.city">
           <option *ngFor="let city of cities"
                   [value]="city.idCity">{{city.city}}
@@ -290,7 +291,7 @@
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
     <button class="btn btn-success"
             [disabled]="stationForm.invalid"
-            (click)="addStation(station,cityForStation.value)">
+            (click)="addStation(station,city.value)">
       Add station
     </button>
   </div>
@@ -388,7 +389,8 @@
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
     <button class="btn btn-success"
             [disabled]="trainForm.invalid"
-            (click)="addTrain(train)">Add train</button>
+            (click)="addTrain(train)">Add train
+    </button>
   </div>
 </ng-template>
 
@@ -543,7 +545,33 @@
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
     <button class="btn btn-success"
-            (click)="addTrip(trip)">Add trip</button>
+            (click)="addTrip(trip)">Add trip
+    </button>
   </div>
 </ng-template>
 
+
+<ng-template #editTripModal>
+  <div bsModal #lgModal="bs-modal" class="modal fade">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Editing trip</h4>
+      <button type="button"
+              class="close pull-right"
+              aria-label="Close"
+              (click)="modalWindowService.closeModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
+      <button class="btn btn-success"
+              [disabled]="countryForm.invalid"
+              (click)="addCountry(country)">
+        Save changes
+      </button>
+    </div>
+  </div>
+</ng-template>
