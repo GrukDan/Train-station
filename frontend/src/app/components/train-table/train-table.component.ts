@@ -57,19 +57,23 @@ export class TrainTableComponent implements OnInit, OnDestroy {
 
   arrivalCities: City[] = [];
   departureCities: City[] = [];
-  arrivalStation: Station[] = [];
-  departureStation: Station[] = [];
+  arrivalStations: Station[] = [];
+  departureStations: Station[] = [];
 
   tripRecords: TripRecord[] = [];
   subscriptions: Subscription[] = [];
 
-  editableTripRecord:TripRecord;
+  editableTripRecord: TripRecord;
 
   size: number = 7;
   totalElements: number = 0;
   direction: boolean = false;
   parameter: string;
   parameters: string[] = [];
+
+  tripRecordClone: TripRecord;
+  editTripFlag: boolean = true;
+  editTripError: boolean = false;
 
   constructor(public modalWindowService: ModalWindowService,
               private validationService: ValidationService,
@@ -147,6 +151,18 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     }))
   }
 
+  addTrain(train: Train) {
+    this.subscriptions.push(this.trainService.save(train).subscribe(() => {
+      this.modalWindowService.closeModal();
+    }));
+  }
+
+  addTrip(trip: Trip) {
+    this.subscriptions.push(this.tripService.save(trip).subscribe(
+      () => this.modalWindowService.closeModal()
+    ));
+  }
+
   loadAllTrainModels() {
     this.subscriptions.push(this.trainModelService.getAll().subscribe(trainModels => {
       this.trainModels = trainModels as TrainModel[];
@@ -177,10 +193,40 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     }))
   }
 
-  loadAllCitiesByCountry(country: any) {
-    this.subscriptions.push(this.cityService.getAllByCountry(country).subscribe(cities => {
-      this.cities = cities as City[];
+  loadAllCitiesByCountry(cities:City[],country: any) {
+    this.subscriptions.push(this.cityService.getAllByCountry(country).subscribe(allCities => {
+      this.departureCities = allCities as City[];
     }))
+  }
+
+  loadAllStationsByCity(stations:Station[],city:number){
+    this.subscriptions.push(this.stationService.getAllByCity(city).subscribe(allStations => {
+      stations = allStations as Station[];
+    }))
+  }
+
+  loadAllTrainsByTrainModel(trainModel: any) {
+    this.subscriptions.push(this.trainService.getAllByModel(trainModel).subscribe(trains => {
+      this.trains = trains as Train[];
+    }))
+  }
+
+  loadDepartureCitiesAndStations(country: number, city: number) {
+    this.loadAllCitiesByCountry(this.departureCities,country);
+    this.loadAllStationsByCity(this.departureStations,city);
+  }
+
+  loadArrivalCitiesAndStations(country: number, city: number) {
+    this.loadAllCitiesByCountry(this.arrivalCities,country);
+    this.loadAllStationsByCity(this.arrivalStations,city);
+  }
+
+  loadRecordPage(page: number, size: number, direction: boolean, parameter: string) {
+    this.subscriptions.push(this.tripService.getPage(page, size, direction, parameter)
+      .subscribe(tripPage => {
+        this.tripRecords = tripPage.tripRecords as TripRecord[];
+        this.totalElements = tripPage.totalElements / this.size * 10;
+      }))
   }
 
   openTripModal(newTrip: TemplateRef<any>) {
@@ -224,60 +270,18 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.modalWindowService.openModal(newCountry);
   }
 
+  openEditTripModal(editTripModal: TemplateRef<any>, tripRecord: TripRecord) {
+    this.modalWindowService.openModal(editTripModal);
+    this.modalWindowService.largeModal();
+    this.editableTripRecord = tripRecord;
+    this.tripRecordClone = this.cloningTripRecord(tripRecord);
 
-  addTrip(trip: Trip) {
-    this.subscriptions.push(this.tripService.save(trip).subscribe(
-      () => this.modalWindowService.closeModal()
-    ));
-  }
-
-  loadAllDepartureCitiesByCountry(country: any) {
-    this.subscriptions.push(this.cityService.getAllByCountry(country).subscribe(cities => {
-      this.departureCities = cities as City[];
-    }))
-  }
-
-// todo: оптимизировать
-  loadAllArrivalStationsByCity(city: any) {
-    this.subscriptions.push(this.stationService.getAllByCity(city).subscribe(stations => {
-      this.arrivalStation = stations as Station[];
-    }))
-  }
-
-  loadAllArrivalCitiesByCountry(country: any) {
-    this.subscriptions.push(this.cityService.getAllByCountry(country).subscribe(cities => {
-      this.arrivalCities = cities as City[];
-    }))
-  }
-
-  loadAllDepartureStationsByCity(city: any) {
-    this.subscriptions.push(this.stationService.getAllByCity(city).subscribe(stations => {
-      this.departureStation = stations as Station[];
-    }))
-  }
-
-  addTrain(train: Train) {
-    this.subscriptions.push(this.trainService.save(train).subscribe(() => {
-      this.modalWindowService.closeModal();
-    }));
-  }
-
-  loadRecordPage(page: number, size: number, direction: boolean, parameter: string) {
-    this.subscriptions.push(this.tripService.getPage(page, size, direction, parameter)
-      .subscribe(tripPage => {
-        this.tripRecords = tripPage.tripRecords as TripRecord[];
-        this.totalElements = tripPage.totalElements / this.size * 10;
-      }))
+    this.loadDepartureCitiesAndStations(tripRecord.departureCountryObj.idCountry, tripRecord.departureCityObj.idCity);
+    this.loadArrivalCitiesAndStations(tripRecord.arrivalCountryObj.idCountry, tripRecord.arrivalCityObj.idCity);
   }
 
   pageChanged(page: number, direction: boolean, parameter) {
     this.loadRecordPage(page, 7, direction, parameter);
-  }
-
-  loadAllTrainsByTrainModel(trainModel: any) {
-    this.subscriptions.push(this.trainService.getAllByModel(trainModel).subscribe(trains => {
-      this.trains = trains as Train[];
-    }))
   }
 
   get _trainModel() {
@@ -409,9 +413,103 @@ export class TrainTableComponent implements OnInit, OnDestroy {
     this.station.city = Number(value);
   }
 
-  openEditTripModal(editTripModal: TemplateRef<any>,tripRecord:TripRecord) {
-    this.modalWindowService.openModal(editTripModal);
-    this.modalWindowService.largeModal();
-    this.editableTripRecord = tripRecord;
+  setEditTripError() {
+    this.editTripError = true;
+    this.editTripFlag = true;
+  }
+
+  setEditTripNoError() {
+    this.editTripError = false;
+    this.editTripFlag = false;
+  }
+
+  saveChanges(editableTripRecord: TripRecord) {
+  }
+
+  cloningTripRecord(tripRecord: TripRecord): TripRecord {
+    return JSON.parse(JSON.stringify(tripRecord));
+  }
+
+  editDepartureCountry(idCountry: number) {
+    this.editableTripRecord.departureCountryObj.idCountry = idCountry;
+    if (idCountry != this.tripRecordClone.departureCountryObj.idCountry) {
+      this.loadAllCitiesByCountry(this.departureCities,idCountry);
+      this.setEditTripNoError();
+    } else {
+      this.setEditTripError()
+    }
+  }
+
+  editDepartureCity(idCity: number) {
+    this.editableTripRecord.departureCityObj.idCity = idCity;
+    if (idCity != this.tripRecordClone.departureCityObj.idCity) {
+      this.loadAllStationsByCity(this.departureStations,idCity);
+      this.setEditTripNoError();
+    } else {
+      this.setEditTripError()
+    }
+  }
+
+  editDepartureStation(departureStation: number) {
+    this.editableTripRecord.departureStation = departureStation;
+    departureStation == this.tripRecordClone.departureStation
+      ? this.setEditTripError()
+      : this.setEditTripNoError();
+  }
+
+  editArrivalCountry(idCountry: number) {
+    this.editableTripRecord.arrivalCountryObj.idCountry = idCountry
+    if (idCountry != this.tripRecordClone.arrivalCountryObj.idCountry) {
+      this.loadAllCitiesByCountry(this.arrivalCities,idCountry);
+      this.setEditTripNoError();
+    } else {
+      this.setEditTripError()
+    }
+  }
+
+  editArrivalCity(idCity: number) {
+    this.editableTripRecord.arrivalCityObj.idCity = idCity;
+    if (idCity != this.tripRecordClone.arrivalCityObj.idCity) {
+      this.loadAllStationsByCity(this.arrivalStations,idCity);
+      this.setEditTripNoError();
+    } else {
+      this.setEditTripError();
+    }
+  }
+
+  editArrivalStation(arrivalStation: number) {
+    this.editableTripRecord.arrivalStation = arrivalStation;
+    arrivalStation == this.tripRecordClone.arrivalStation
+      ? this.setEditTripError()
+      : this.setEditTripNoError();
+  }
+
+  editTrainModel(idTrainModel: number) {
+    this.editableTripRecord.trainModelObj.idTrainModel = idTrainModel;
+    if (idTrainModel != this.tripRecordClone.trainModelObj.idTrainModel) {
+      this.loadAllTrainsByTrainModel(idTrainModel);
+      this.setEditTripNoError();
+    } else {
+      this.setEditTripError();
+    }
+  }
+
+  editTrain(idTrain: number) {
+    this.editableTripRecord.trainObj.idTrain = idTrain;
+    idTrain == this.tripRecordClone.trainObj.idTrain
+      ? this.setEditTripError()
+      : this.setEditTripNoError();
+  }
+
+  filterCitiesByCountry(cities:City[],idCountry:number):City[]{
+    return cities
+      .filter(city=> city.country == idCountry)
+      .map(city=> { return city} );
+  }
+
+  filterStationsByCity(stations:Station[],idCity:number):Station[]{
+    return stations
+      .filter(station=>station.city == idCity)
+      .map(station =>{ return station});
   }
 }

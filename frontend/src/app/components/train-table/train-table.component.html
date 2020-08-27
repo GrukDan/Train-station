@@ -100,7 +100,8 @@
           <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}}
             of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
           <td>
-            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal,tripRecord)">Edit <i class="fa fa-edit"></i>
+            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal,tripRecord)">Edit <i
+              class="fa fa-edit"></i>
             </button>
           </td>
           <td>
@@ -247,7 +248,7 @@
                 id="countryForStation"
                 name="country"
                 #countryForStation
-                (change)="loadAllCitiesByCountry(countryForStation.value)">
+                (change)="loadAllCitiesByCountry(cities,countryForStation.value)">
           <option *ngFor="let country of countries"
                   [value]="country.idCountry">
             {{country.country}}
@@ -425,7 +426,7 @@
                     name="country"
                     formControlName="departureCountry"
                     #countryForTripDeparture
-                    (change)="loadAllDepartureCitiesByCountry(countryForTripDeparture.value)">
+                    (change)="loadAllCitiesByCountry(departureCities,countryForTripDeparture.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
@@ -439,7 +440,7 @@
                     name="city"
                     formControlName="departureCity"
                     [(ngModel)]="idDepartureCity"
-                    (change)="loadAllDepartureStationsByCity(idDepartureCity)">
+                    (change)="loadAllStationsByCity(departureStations,idDepartureCity)">
               <option *ngFor="let city of departureCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
@@ -453,7 +454,7 @@
                     name="station"
                     formControlName="departureStation"
                     [(ngModel)]="trip.departureStation">
-              <option *ngFor="let station of departureStation"
+              <option *ngFor="let station of departureStations"
                       [value]="station.idStation">{{station.station}}</option>
             </select>
             <div *ngIf="_departureStation.invalid && (_departureStation.touched || _departureStation.dirty)"
@@ -469,7 +470,7 @@
                     name="country"
                     formControlName="arrivalCountry"
                     #countryForTripArrival
-                    (change)="loadAllArrivalCitiesByCountry(countryForTripArrival.value)">
+                    (change)="loadAllCitiesByCountry(arrivalCities,countryForTripArrival.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
@@ -483,7 +484,7 @@
                     name="city"
                     formControlName="arrivalCity"
                     [(ngModel)]="idArrivalCity"
-                    (change)="loadAllArrivalStationsByCity(idArrivalCity)">
+                    (change)="loadAllStationsByCity(arrivalStations,idArrivalCity)">
               <option *ngFor="let city of arrivalCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
@@ -497,7 +498,7 @@
                     name="station"
                     formControlName="arrivalStation"
                     [(ngModel)]="trip.arrivalStation">
-              <option *ngFor="let station of arrivalStation"
+              <option *ngFor="let station of arrivalStations"
                       [value]="station.idStation">{{station.station}}</option>
             </select>
             <div *ngIf="_arrivalStation.invalid && (_arrivalStation.touched || _arrivalStation.dirty)"
@@ -563,66 +564,140 @@
     <p class="h5 mb-3"><b>Departure data</b></p>
     <div class="row">
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="departureCountry" class="h5">Departure country</label>
-        <select id="departureCountry">
-          <option *ngFor="let country of countries;let i = index"
-                  [selected]="country.idCountry == editableTripRecord.departureCountryObj.idCountry"
-          >{{country.country}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="departureCountry" class="h5">Departure country</label>
+          <select id="departureCountry"
+                  class="form-control"
+                  (change)="editDepartureCountry($event.target.value)">
+            <option *ngFor="let country of countries;let i = index"
+                    [value]="country.idCountry"
+                    [selected]="country.idCountry == editableTripRecord.departureCountryObj.idCountry"
+            >{{country.country}}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="departureCity" class="h5">Departure city</label>
-        <select id="departureCity">
-          <option *ngFor="let city of cities;let i = index"
-                  [selected]="city.idCity == editableTripRecord.departureCityObj.idCity"
-          >{{city.city}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="editDepartureCity" class="h5">Departure city</label>
+          <select id="editDepartureCity"
+                  class="form-control"
+                  (change)="editDepartureCity($event.target.value)">
+            <option
+              *ngFor="
+              let city of departureCities;
+              let i = index"
+                    [value]="city.idCity"
+                    [selected]="city.idCity == editableTripRecord.departureCityObj.idCity"
+            >{{city.city}}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="departureStation" class="h5">Departure station</label>
-        <select id="departureStation">
-          <option *ngFor="let station of stations;let i = index"
-                  [selected]="station.idStation == editableTripRecord.departureStationObj.idStation">
-            {{station.station}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="departureStation" class="h5">Departure station</label>
+          <select id="departureStation"
+                  class="form-control"
+                  (change)="editDepartureStation($event.target.value)">
+            <option *ngFor="let station of departureStations;let i = index"
+                    [value]="station.idStation"
+                    [selected]="station.idStation == editableTripRecord.departureStationObj.idStation">
+              {{station.station}}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
     <p class="h5 mt-4 mb-3"><b>Arrival data</b></p>
     <div class="row">
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="arrivalCountry" class="h5">Arrival country</label>
-        <select id="arrivalCountry">
-          <option *ngFor="let country of countries;let i = index"
-                  [selected]="country.idCountry == editableTripRecord.arrivalCountryObj.idCountry">
-            {{country.country}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="editArrivalCountry" class="h5">Arrival country</label>
+          <select id="editArrivalCountry"
+                  class="form-control"
+                  (change)="editArrivalCountry($event.target.value)">
+            <option *ngFor="let country of countries;let i = index"
+                    [value]="country.idCountry"
+                    [selected]="country.idCountry == editableTripRecord.arrivalCountryObj.idCountry">
+              {{country.country}}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="arrivalCity" class="h5">Arrival city</label>
-        <select id="arrivalCity">
-          <option *ngFor="let city of cities; let i = index"
-                  [selected]="city.idCity == editableTripRecord.arrivalCityObj.idCity">
-            {{city.city}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="editArrivalCity" class="h5">Arrival city</label>
+          <select id="editArrivalCity"
+                  class="form-control"
+                  (change)="editArrivalCity($event.target.value)">
+            <option *ngFor="let city of arrivalCities; let i = index"
+                    [value]="city.idCity"
+                    [selected]="city.idCity == editableTripRecord.arrivalCityObj.idCity">
+              {{city.city}}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="col-12 col-sm-6 col-md-4">
-        <label for="arrivalStation" class="h5">Arrival station</label>
-        <select id="arrivalStation">
-          <option *ngFor="let station of stations;let i = index"
-                  [selected]="station.idStation == editableTripRecord.arrivalStationObj.idStation">
-            {{station.station}}
-          </option>
-        </select>
+        <div class="form-group">
+          <label for="arrivalStation" class="h5">Arrival station</label>
+          <select id="arrivalStation"
+                  class="form-control"
+                  (change)="editArrivalStation($event.target.value)">
+            <option *ngFor="let station of arrivalStations;let i = index"
+                    [value]="station.idStation"
+                    [selected]="station.idStation == editableTripRecord.arrivalStation">
+              {{station.station}}
+            </option>
+          </select>
+        </div>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="editTrainModel" class="h5">Train model</label>
+          <select id="editTrainModel"
+                  name="editTrainModel"
+                  class="form-control"
+                  (change)="editTrainModel($event.target.value)">
+            <option *ngFor="let trainModel of trainModels;let i = index"
+                    [value]="trainModel.idTrainModel"
+                    [selected]="trainModel.idTrainModel == editableTripRecord.trainModelObj.idTrainModel">
+              {{trainModel.model}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="editTrain" class="h5">Train</label>
+          <select id="editTrain"
+                  name="editTrain"
+                  class="form-control"
+                  (change)="editTrain($event.target.value)">
+            <option *ngFor="let train of trains;let i = index"
+                    [value]="train.idTrain"
+                    [selected]="train.idTrain == editableTripRecord.trainObj.idTrain"
+            class="text-monospace">
+              №{{train.idTrain}} of {{train.dateOfCreation | date}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-danger"
+         *ngIf="editTripError">
+      An error occurred during editing. Possibly select the same fields
     </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
-    <button class="btn btn-success">Save changes</button>
+    <button class="btn btn-success"
+            [disabled]="editTripFlag"
+            (click)="saveChanges(editableTripRecord)"
+    >Save changes
+    </button>
   </div>
 </ng-template>
