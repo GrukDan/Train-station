@@ -1,7 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Country} from "../../models/station-details/country";
-import {TreeNode} from "angular-tree-component/dist/defs/api";
-import {async} from "@angular/core/testing";
+import { TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
+
+const actionMapping: IActionMapping = {
+  mouse: {
+    click: (tree, node, $event) => {
+      console.log(node.children)
+    }
+  }
+};
+
+
 
 @Component({
   selector: 'app-tree-station',
@@ -21,10 +29,7 @@ export class TreeStationComponent implements OnInit {
   @Input()
   nodes:any[];
 
-  options = {
-    useVirtualScroll: true,
-    animateExpand: true,
-    animateSpeed: 30,
+  options: ITreeOptions = {
+    actionMapping
   };
-
 }

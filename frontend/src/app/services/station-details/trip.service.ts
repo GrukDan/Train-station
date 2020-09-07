@@ -49,6 +49,10 @@ export class TripService {
   }
 
   getAll(): Observable<TripRecord[]> {
-    return this.http.get<TripRecord[]>(this.url + '/get-all/trip-record');
+    return this.http.get<TripRecord[]>(this.url + '/get-all/trip-records');
+  }
+
+  delete(idTrip:number):Observable<void>{
+    return this.http.delete<void>(this.url + `/${idTrip}`);
   }
 }

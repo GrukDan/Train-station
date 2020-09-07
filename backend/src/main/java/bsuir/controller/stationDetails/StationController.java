@@ -27,15 +27,14 @@ public class StationController {
         return ResponseEntity.ok(stationService.save(station));
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestParam("id") long id){
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Long id){
         log.info("DELETE request [{URL: " +"/api/stations},{parameter:" + id +"}];");
         stationService.delete(id);
-        return ResponseEntity.ok("deleted");
     }
 
     @RequestMapping(value = "/by-city",method = RequestMethod.GET)
-    public ResponseEntity<List<Station>> getAllByCity(@RequestParam("city") long city){
+    public ResponseEntity<List<Station>> getAllByCity(@RequestParam("city") Long city){
         log.info("GET request [{URL: " +"/api/stations/by-city},{parameter:" + city +"}];");
         return ResponseEntity.ok(stationService.getAllByCity(city));
     }

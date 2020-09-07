@@ -1,5 +1,6 @@
 package bsuir.service.StationDetails.Impl;
 
+import bsuir.exception.AlreadyExists;
 import bsuir.model.pageModel.TripPage;
 import bsuir.model.stationDetails.*;
 import bsuir.model.viewModel.TripRecord;
@@ -19,37 +20,53 @@ import java.util.stream.Collectors;
 @Service
 public class TripServiceImpl implements TripService {
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private TripRepository tripRepository;
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private CountryService countryService;
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private CityService cityService;
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private StationService stationService;
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private TrainService trainService;
 
-    @Setter(onMethod=@__({@Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private TrainModelService trainModelService;
 
-    @Override
-    public Trip save(Trip trip) {
-        return tripRepository.save(trip);
+    private class TripStationData {
+        List<Station> stations;
+        List<City> cities;
+        List<Country> countries;
+    }
+
+    private boolean tripExists(Trip trip) {
+        return tripRepository
+                .existsByDepartureStationAndArrivalStationAndTrain(
+                        trip.getDepartureStation(),
+                        trip.getArrivalStation(),
+                        trip.getTrain());
     }
 
     @Override
-    public void delete(long id) {
+    public Trip save(Trip trip) throws AlreadyExists {
+        if (!tripExists(trip)) {
+            return tripRepository.save(trip);
+        } else throw new AlreadyExists("The some trip" + trip.toString() + "already exists.");
+    }
+
+    @Override
+    public void delete(Long id) {
         tripRepository.deleteById(id);
     }
 
     @Override
-    public Trip getById(long id) {
-        return tripRepository.findById(id).get();
+    public Trip getById(Long id) throws ChangeSetPersister.NotFoundException {
+        return tripRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 
     @Override
@@ -58,22 +75,22 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Trip> getAllByDepartureStation(long departureStation) {
+    public List<Trip> getAllByDepartureStation(Long departureStation) {
         return tripRepository.findAllByDepartureStation(departureStation);
     }
 
     @Override
-    public List<Trip> getAllByArrivalStation(long arrivalStation) {
+    public List<Trip> getAllByArrivalStation(Long arrivalStation) {
         return tripRepository.findAllByArrivalStation(arrivalStation);
     }
 
     @Override
-    public List<Trip> getAllByDepartureStationAndArrivalStation(long departureStation, long arrivalStation) {
+    public List<Trip> getAllByDepartureStationAndArrivalStation(Long departureStation, Long arrivalStation) {
         return tripRepository.findAllByDepartureStationAndArrivalStation(departureStation, arrivalStation);
     }
 
     @Override
-    public List<Trip> getAllByTrain(long train) {
+    public List<Trip> getAllByTrain(Long train) {
         return tripRepository.findAllByTrain(train);
     }
 
@@ -103,24 +120,28 @@ public class TripServiceImpl implements TripService {
         setTrainModel(tripRecords, trainModels);
     }
 
-    private void setArrivalData(List<TripRecord> tripRecords) {
-        List<Station> arrivalStations = stationService.getAllByIdIn(collectArrivalStationIds(tripRecords));
-        List<City> arrivalCities = cityService.getAllByIdIn(collectCity(arrivalStations));
-        List<Country> arrivalCountries = countryService.getAllByIdIn(collectCountry(arrivalCities));
+    private TripStationData getTripStationData(List<Long> stationIds) {
+        TripStationData tripStationData = new TripStationData();
+        tripStationData.stations = stationService.getAllByIdIn(stationIds);
+        tripStationData.cities = cityService.getAllByIdIn(collectCity(tripStationData.stations));
+        tripStationData.countries = countryService.getAllByIdIn(collectCountry(tripStationData.cities));
+        return tripStationData;
+    }
 
-        setArrivalStation(tripRecords, arrivalStations);
-        setArrivalCity(tripRecords, arrivalCities);
-        setArrivalCountry(tripRecords, arrivalCountries);
+    private void setArrivalData(List<TripRecord> tripRecords) {
+        TripStationData arrivalData = getTripStationData(collectArrivalStationIds(tripRecords));
+
+        setArrivalStation(tripRecords, arrivalData.stations);
+        setArrivalCity(tripRecords, arrivalData.cities);
+        setArrivalCountry(tripRecords, arrivalData.countries);
     }
 
     private void setDepartureData(List<TripRecord> tripRecords) {
-        List<Station> departureStations = stationService.getAllByIdIn(collectDepartureStationIds(tripRecords));
-        List<City> departureCities = cityService.getAllByIdIn(collectCity(departureStations));
-        List<Country> departureCountries = countryService.getAllByIdIn(collectCountry(departureCities));
+        TripStationData arrivalData = getTripStationData(collectDepartureStationIds(tripRecords));
 
-        setDepartureStation(tripRecords, departureStations);
-        setDepartureCity(tripRecords, departureCities);
-        setDepartureCountry(tripRecords, departureCountries);
+        setDepartureStation(tripRecords, arrivalData.stations);
+        setDepartureCity(tripRecords, arrivalData.cities);
+        setDepartureCountry(tripRecords, arrivalData.countries);
     }
 
     private List<Long> collectTrainIds(List<TripRecord> tripRecords) {

@@ -27,11 +27,10 @@ public class CityController {
         return ResponseEntity.ok(cityService.save(city));
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestParam("id") long id){
+    @RequestMapping(value = "{id}",method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Long id){
         log.info("DELETE request [{URL: " +"/api/cities},{parameter:" + id +"}];");
         cityService.delete(id);
-        return ResponseEntity.ok("deleted");
     }
 
     @RequestMapping(value = "/get-all",method = RequestMethod.GET)
@@ -41,7 +40,7 @@ public class CityController {
     }
 
     @RequestMapping(value = "/by-country",method = RequestMethod.GET)
-    public ResponseEntity<List<City>> getAllByCountry(@RequestParam("country") long country){
+    public ResponseEntity<List<City>> getAllByCountry(@RequestParam("country") Long country){
         log.info("GET request [{URL: " +"/api/cities/by-country},{parameter:" + country +"}];");
         return ResponseEntity.ok(cityService.getAllByCountry(country));
     }

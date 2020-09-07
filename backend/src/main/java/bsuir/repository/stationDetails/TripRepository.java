@@ -17,5 +17,5 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
 
     List<Trip> findAllByDepartureStationAndArrivalStation(long departureStation, long arrivalStation);
 
-
+    boolean existsByDepartureStationAndArrivalStationAndTrain(long departureStation,long arrivalStation,long train);
 }

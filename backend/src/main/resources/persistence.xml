@@ -18,7 +18,7 @@
         <class>bsuir.model.userDetails.User</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/train_station"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
         </properties>
     </persistence-unit>
 </persistence>

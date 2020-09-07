@@ -26,15 +26,15 @@ public class TrainController {
         return ResponseEntity.ok(trainService.save(train));
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestParam("id") long id){
+    @RequestMapping(value = "{id}",method = RequestMethod.DELETE)
+    public ResponseEntity<String> delete(@PathVariable("id") Long id){
         log.info("DELETE request [{URL: " +"/api/trains},{parameter:" + id +"}];");
         trainService.delete(id);
         return ResponseEntity.ok("deleted");
     }
 
-    @RequestMapping(value = "/get-all/by-model",method = RequestMethod.GET)
-    public ResponseEntity<List<Train>> getAllByModel(@RequestParam("model") long model){
+    @RequestMapping(value = "/get-all/by-model/{model}",method = RequestMethod.GET)
+    public ResponseEntity<List<Train>> getAllByModel(@PathVariable("model") Long model){
         log.info("GET request [{URL: " +"/api/trains/get-all/by-model},{parameter:" + model +"}];");
         return ResponseEntity.ok(trainService.getAllByModel(model));
     }

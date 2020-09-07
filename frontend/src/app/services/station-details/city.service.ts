@@ -29,4 +29,8 @@ export class CityService {
           .set('country', country.toString())
       })
   }
+
+  public delete(idCity:number):Observable<void>{
+    return this.http.delete<void>(this.url + '/' + idCity.toString());
+  }
 }

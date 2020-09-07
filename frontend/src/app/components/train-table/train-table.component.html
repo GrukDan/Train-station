@@ -48,7 +48,10 @@
       </button>
     </div>
     <div class="mt-3">
-      <button class="btn btn-lg btn-block btn-primary">Update <i class="fa fa-refresh fa-spin "></i></button>
+      <button class="btn btn-lg btn-block btn-primary"
+              (click)="loadAllCardData()">
+        Update <i class="fa fa-refresh fa-spin "></i>
+      </button>
     </div>
     <div class="row">
       <div class="col-12 col-md-6">
@@ -100,12 +103,16 @@
           <td><a>№{{tripRecord.trainObj.idTrain}}/{{tripRecord.trainModelObj.model}}
             of {{tripRecord.trainObj.dateOfCreation | date}}</a></td>
           <td>
-            <button class="btn btn-primary" (click)="openEditTripModal(editTripModal,tripRecord)">Edit <i
-              class="fa fa-edit"></i>
+            <button class="btn btn-primary"
+                    (click)="openEditTripModal(editTripModal,tripRecord)">
+              Edit <i class="fa fa-edit"></i>
             </button>
           </td>
           <td>
-            <button class="btn btn-danger">Delete <i class="fa fa-trash-o"></i></button>
+            <button class="btn btn-danger"
+                    (click)="deleteTrip(tripRecord)">
+              Delete <i class="fa fa-trash-o"></i>
+            </button>
           </td>
         </tr>
         </tbody>
@@ -113,7 +120,7 @@
       <div class="pagination justify-content-center">
         <pagination [boundaryLinks]="true"
                     [totalItems]="totalElements"
-                    (pageChanged)="pageChanged($event.page,direction,parameters[0])"
+                    (pageChanged)="pageChanged($event.page,size,direction,parameters[0])"
                     previousText="&lsaquo;"
                     nextText="&rsaquo;"
                     firstText="&laquo;"
@@ -248,7 +255,7 @@
                 id="countryForStation"
                 name="country"
                 #countryForStation
-                (change)="loadAllCitiesByCountry(cities,countryForStation.value)">
+                (change)="loadAllCitiesByCountry(countryForStation.value)">
           <option *ngFor="let country of countries"
                   [value]="country.idCountry">
             {{country.country}}
@@ -259,10 +266,10 @@
                 id="cityForStation"
                 name="city"
                 formControlName="city"
-                [disabled]="cities?.length==0"
                 #city
-                (click)="clickCityForStation(city.value)"
-                [(ngModel)]="station.city">
+                [(ngModel)]="station.city"
+                (click)="clickSelectCityForStation(city.value)"
+                [disabled]="cities?.length==0">
           <option *ngFor="let city of cities"
                   [value]="city.idCity">{{city.city}}
           </option>
@@ -280,7 +287,7 @@
                [(ngModel)]="station.station">
         <small class="form-text text-muted">Input name of station</small>
         <div *ngIf="_station.invalid && (_station.touched || _station.dirty)" class="alert alert-danger">
-          <p *ngIf="false">This country already exists</p>
+          <p *ngIf="false">This station already exists</p>
           <p *ngIf="_station.errors?.required">This field is required</p>
           <p *ngIf="_station.errors?.minlength">The min length isn't valid</p>
           <p *ngIf="_station.errors?.maxlength">The max length isn't valid</p>
@@ -293,7 +300,7 @@
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
     <button class="btn btn-success"
             [disabled]="stationForm.invalid"
-            (click)="addStation(station,city.value)">
+            (click)="addStation(station)">
       Add station
     </button>
   </div>
@@ -426,7 +433,7 @@
                     name="country"
                     formControlName="departureCountry"
                     #countryForTripDeparture
-                    (change)="loadAllCitiesByCountry(departureCities,countryForTripDeparture.value)">
+                    (change)="loadAllDepartureCitiesByCountry(countryForTripDeparture.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
@@ -439,8 +446,8 @@
                     id="cityForTripOne"
                     name="city"
                     formControlName="departureCity"
-                    [(ngModel)]="idDepartureCity"
-                    (change)="loadAllStationsByCity(departureStations,idDepartureCity)">
+                    #departureCity
+                    (change)="loadAllDepartureStationsByCity(departureCity.value)">
               <option *ngFor="let city of departureCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
@@ -470,7 +477,7 @@
                     name="country"
                     formControlName="arrivalCountry"
                     #countryForTripArrival
-                    (change)="loadAllCitiesByCountry(arrivalCities,countryForTripArrival.value)">
+                    (change)="loadAllArrivalCitiesByCountry(countryForTripArrival.value)">
               <option *ngFor="let country of countries"
                       [value]="country.idCountry">{{country.country}}</option>
             </select>
@@ -483,8 +490,8 @@
                     id="cityForTripTwo"
                     name="city"
                     formControlName="arrivalCity"
-                    [(ngModel)]="idArrivalCity"
-                    (change)="loadAllStationsByCity(arrivalStations,idArrivalCity)">
+                    #arrivalCity
+                    (change)="loadAllArrivalStationsByCity(arrivalCity.value)">
               <option *ngFor="let city of arrivalCities"
                       [value]="city.idCity">{{city.city}}</option>
             </select>
@@ -556,7 +563,7 @@
 <ng-template #editTripModal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Editing trip</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalWindowService.closeModal()">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="closeEditTripModal()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -582,13 +589,14 @@
           <label for="editDepartureCity" class="h5">Departure city</label>
           <select id="editDepartureCity"
                   class="form-control"
+                  (click)="clickEditDepartureCity($event.target.value)"
                   (change)="editDepartureCity($event.target.value)">
             <option
               *ngFor="
               let city of departureCities;
               let i = index"
-                    [value]="city.idCity"
-                    [selected]="city.idCity == editableTripRecord.departureCityObj.idCity"
+              [value]="city.idCity"
+              [selected]="city.idCity == editableTripRecord.departureCityObj.idCity"
             >{{city.city}}
             </option>
           </select>
@@ -599,9 +607,10 @@
           <label for="departureStation" class="h5">Departure station</label>
           <select id="departureStation"
                   class="form-control"
-                  (change)="editDepartureStation($event.target.value)">
+                  #editDepartureStationTemp>
             <option *ngFor="let station of departureStations;let i = index"
                     [value]="station.idStation"
+                    [disabled]="station.idStation == editableTripRecord.arrivalStation"
                     [selected]="station.idStation == editableTripRecord.departureStationObj.idStation">
               {{station.station}}
             </option>
@@ -630,6 +639,7 @@
           <label for="editArrivalCity" class="h5">Arrival city</label>
           <select id="editArrivalCity"
                   class="form-control"
+                  (click)="clickEditArrivalCity($event.target.value)"
                   (change)="editArrivalCity($event.target.value)">
             <option *ngFor="let city of arrivalCities; let i = index"
                     [value]="city.idCity"
@@ -644,9 +654,10 @@
           <label for="arrivalStation" class="h5">Arrival station</label>
           <select id="arrivalStation"
                   class="form-control"
-                  (change)="editArrivalStation($event.target.value)">
+                  #editArrivalStationTemp>
             <option *ngFor="let station of arrivalStations;let i = index"
                     [value]="station.idStation"
+                    [disabled]="station.idStation == editableTripRecord.departureStation"
                     [selected]="station.idStation == editableTripRecord.arrivalStation">
               {{station.station}}
             </option>
@@ -664,7 +675,8 @@
                   (change)="editTrainModel($event.target.value)">
             <option *ngFor="let trainModel of trainModels;let i = index"
                     [value]="trainModel.idTrainModel"
-                    [selected]="trainModel.idTrainModel == editableTripRecord.trainModelObj.idTrainModel">
+                    [selected]="trainModel.idTrainModel == editableTripRecord.trainModelObj.idTrainModel"
+                    class="text-monospace">
               {{trainModel.model}}
             </option>
           </select>
@@ -676,27 +688,26 @@
           <select id="editTrain"
                   name="editTrain"
                   class="form-control"
+                  #editTrainTemp
                   (change)="editTrain($event.target.value)">
             <option *ngFor="let train of trains;let i = index"
                     [value]="train.idTrain"
                     [selected]="train.idTrain == editableTripRecord.trainObj.idTrain"
-            class="text-monospace">
+                    class="text-monospace">
               №{{train.idTrain}} of {{train.dateOfCreation | date}}
             </option>
           </select>
         </div>
       </div>
     </div>
-    <div class="alert alert-danger"
-         *ngIf="editTripError">
-      An error occurred during editing. Possibly select the same fields
+    <div *ngIf="editTripFlag" class="alert alert-danger text-monospace">
+      Some error. Maybe the input is void
     </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" (click)="modalWindowService.closeModal()">Close</button>
     <button class="btn btn-success"
-            [disabled]="editTripFlag"
-            (click)="saveChanges(editableTripRecord)"
+            (click)="saveChanges(editableTripRecord,editDepartureStationTemp.value,editArrivalStationTemp.value,editTrainTemp.value)"
     >Save changes
     </button>
   </div>

@@ -27,13 +27,8 @@ export class TaskService {
     return this.http.get<string[]>(this.url + '/get-parameters');
   }
 
-  public getTaskViewModelById(id: number): Observable<TaskViewModel> {
-    return this.http.get<TaskViewModel>(
-      this.url + '/get-by-id',
-      {
-        params: new HttpParams()
-          .set('id', id.toString())
-      })
+  public getTaskViewModelById(idTask: number): Observable<TaskViewModel> {
+    return this.http.get<TaskViewModel>(this.url + `/${idTask}`);
   }
 
   public getPage(page: number = 0,
@@ -51,7 +46,7 @@ export class TaskService {
       });
   }
 
-  public delete(idTask:number):Observable<{}>{
-    return this.http.delete(this.url  + `/${idTask}`)
+  public delete(idTask: number): Observable<{}> {
+    return this.http.delete(this.url + `/${idTask}`)
   }
 }

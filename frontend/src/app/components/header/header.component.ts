@@ -1,5 +1,4 @@
 import {Component, HostListener, OnDestroy, OnInit, TemplateRef} from '@angular/core';
-import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {Observable, of, Subscription} from "rxjs";
 import {RoleService} from "../../services/user-details/role.service";
 import {Role} from "../../models/user-details/role";

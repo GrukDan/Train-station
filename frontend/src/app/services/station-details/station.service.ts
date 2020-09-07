@@ -29,4 +29,8 @@ export class StationService {
           .set('city', city.toString())
       })
   }
+
+  public delete(idStation:number):Observable<void>{
+    return this.http.delete<void>(this.url + '/' + idStation.toString());
+  }
 }

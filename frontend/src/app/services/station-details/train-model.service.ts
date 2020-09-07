@@ -14,7 +14,6 @@ export class TrainModelService {
   constructor(private http:HttpClient) { }
 
   public save(trainModel:TrainModel):Observable<TrainModel>{
-    console.log(trainModel);
     return this.http.post<TrainModel>(this.url + '/save',trainModel);
   }
 

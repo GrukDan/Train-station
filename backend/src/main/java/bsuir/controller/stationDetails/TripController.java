@@ -1,5 +1,6 @@
 package bsuir.controller.stationDetails;
 
+import bsuir.exception.AlreadyExists;
 import bsuir.model.pageModel.TripPage;
 import bsuir.model.stationDetails.Trip;
 import bsuir.model.viewModel.TripRecord;
@@ -27,30 +28,34 @@ public class TripController {
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public ResponseEntity<Trip> save(@RequestBody Trip trip){
         log.info("POST request [{URL: " +"/api/trips/save},{body:" + trip +"}];");
-        return ok(tripService.save(trip));
+        try {
+            return ok(tripService.save(trip));
+        } catch (AlreadyExists alreadyExists) {
+            alreadyExists.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body(new Trip());
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestParam("id") long id){
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Long id){
         log.info("DELETE request [{URL: " +"/api/trips},{parameter:" + id +"}];");
         tripService.delete(id);
-        return ok("deleted");
     }
 
-    @RequestMapping(value = "/get-all/by-arrival-station",method = RequestMethod.GET)
-    public ResponseEntity<List<Trip>> getAllByArrivalStation(@RequestParam("arrivalStation") long arrivalStation){
+    @RequestMapping(value = "/get-all/{arrivalStation}",method = RequestMethod.GET)
+    public ResponseEntity<List<Trip>> getAllByArrivalStation(@PathVariable("arrivalStation") Long arrivalStation){
         log.info("GET request [{URL: " +"/api/trips/get-all/by-arrival-station},{parameter:" + arrivalStation +"}];");
         return ok(tripService.getAllByArrivalStation(arrivalStation));
     }
 
-    @RequestMapping(value = "/get-all/by-departure-station",method = RequestMethod.GET)
-    public ResponseEntity<List<Trip>> getAllByDepartureStation(@RequestParam("departureStation") long departureStation){
+    @RequestMapping(value = "/get-all/{departureStation}",method = RequestMethod.GET)
+    public ResponseEntity<List<Trip>> getAllByDepartureStation(@PathVariable("departureStation") Long departureStation){
         log.info("GET request [{URL: " +"/api/trips/get-all/by-departure-station},{parameter:" + departureStation +"}];");
         return ok(tripService.getAllByDepartureStation(departureStation));
     }
 
-    @RequestMapping(value = "/get-all/by-train",method = RequestMethod.GET)
-    public ResponseEntity<List<Trip>> getAllByTrain(@RequestParam("train") long train){
+    @RequestMapping(value = "/get-all/{train}",method = RequestMethod.GET)
+    public ResponseEntity<List<Trip>> getAllByTrain(@PathVariable("train") Long train){
         log.info("GET request [{URL: " +"/api/trips/get-all/by-train},{parameter:" + train +"}];");
         return ok(tripService.getAllByTrain(train));
     }
@@ -64,7 +69,7 @@ public class TripController {
         return ok(tripService.getPage(page,size,direction,parameter));
     }
 
-    @RequestMapping(value = "/get-all/trip-record",method = RequestMethod.GET)
+    @RequestMapping(value = "/get-all/trip-records",method = RequestMethod.GET)
     public ResponseEntity<List<TripRecord>> getAllTripRecords(){
         log.info("GET request [{URL: " +"/api/trips/get-all/trip-record}];");
         return ResponseEntity.ok(tripService.getAllTripRecords());

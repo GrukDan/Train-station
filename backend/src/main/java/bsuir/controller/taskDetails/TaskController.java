@@ -56,8 +56,8 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getPage(page, size, direction, parameter));
     }
 
-    @RequestMapping(value = "/get-by-id",method = RequestMethod.GET)
-    public ResponseEntity<TaskViewModel> getTaskViewModelById(@RequestParam("id") long id){
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public ResponseEntity<TaskViewModel> getTaskViewModelById(@PathVariable("id") Long id){
         log.info("GET request [{URL: " +"/api/tasks/get-by-id}];");
         TaskViewModel taskViewModel = taskService.getTaskViewModelById(id);
         return taskViewModel!=null
@@ -65,8 +65,8 @@ public class TaskController {
                 : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping(value = "/{idTask}")
-    public void delete(@PathVariable("idTask")Long idTask){
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable("id")Long idTask){
         log.info(String.format("DELETE request [{URL: /api/tasks/{%s}];",idTask));
         taskService.delete(idTask);
     }

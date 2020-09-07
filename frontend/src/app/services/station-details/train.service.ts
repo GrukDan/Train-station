@@ -9,7 +9,7 @@ import {Train} from "../../models/station-details/train";
 })
 export class TrainService {
 
-  private url: string = "/api/trains";
+  private  url: string = "/api/trains";
 
   constructor(private http: HttpClient) {
   }
@@ -24,10 +24,10 @@ export class TrainService {
 
   public getAllByModel(model: number): Observable<Train[]> {
     return this.http.get<Train[]>(
-      this.url + '/get-all/by-model',
-      {
-        params: new HttpParams()
-          .set('model', model.toString())
-      })
+      this.url + '/get-all/by-model' + '/' + model.toString());
+  }
+
+  public delete(idTrain:number):Observable<void>{
+    return this.http.delete<void>(this.url + '/' + idTrain.toString());
   }
 }

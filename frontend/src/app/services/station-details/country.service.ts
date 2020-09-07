@@ -19,4 +19,7 @@ export class CountryService {
   public getAll():Observable<Country[]>{
     return this.http.get<Country[]>(this.url + '/get-all');
   }
+  public delete(idCountry:number):Observable<void>{
+    return this.http.delete<void>(this.url + '/' + idCountry.toString());
+  }
 }

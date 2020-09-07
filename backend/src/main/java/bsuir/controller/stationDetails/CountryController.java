@@ -26,11 +26,10 @@ public class CountryController {
         return ResponseEntity.ok(countryService.save(country));
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestParam("id") long id){
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Long id){
         log.info("DELETE request [{URL: " +"/api/countries},{parameter:" + id +"}];");
         countryService.delete(id);
-        return ResponseEntity.ok("deleted");
     }
 
     @RequestMapping(value = "/get-all",method = RequestMethod.GET)
