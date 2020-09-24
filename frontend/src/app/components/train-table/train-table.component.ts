@@ -579,4 +579,8 @@ export class TrainTableComponent implements OnInit, OnDestroy {
           this.loadRecordPage(this.page, this.size, this.direction, this.parameter);
         }));
   }
+
+  selectTrainForTrip(idTrain: any) {
+    this.trip.train = idTrain;
+  }
 }

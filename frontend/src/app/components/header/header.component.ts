@@ -15,6 +15,7 @@ import {ValidationService} from "../../services/reactive-forms/validation.servic
 import {TripService} from "../../services/station-details/trip.service";
 import {TripRecord} from "../../models/view-models/trip-record";
 import {Alternative} from "../../models/task-details/alternative";
+import {AuthService} from "../../services/auth/auth.service";
 
 
 @Component({
@@ -53,7 +54,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private statusService: StatusService,
               private tripService: TripService,
               private validationService: ValidationService,
-              public modalWindowService: ModalWindowService) {
+              public modalWindowService: ModalWindowService,
+              public authService:AuthService) {
   }
 
   ngOnInit() {

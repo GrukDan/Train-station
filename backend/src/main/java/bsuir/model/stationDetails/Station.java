@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "station", schema = "train_station")
@@ -17,11 +18,11 @@ public class Station {
 
     @Id
     @Column(name = "id_station", nullable = false)
-    @EqualsAndHashCode.Include
     private long idStation;
 
     @Basic
     @Column(name = "station", nullable = false, length = 45)
+    @NotBlank
     private String station;
 
     @Basic

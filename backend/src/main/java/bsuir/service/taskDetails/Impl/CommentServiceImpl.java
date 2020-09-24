@@ -3,7 +3,6 @@ package bsuir.service.taskDetails.Impl;
 import bsuir.model.taskDetails.Comment;
 import bsuir.repository.taskDetails.CommentRepository;
 import bsuir.service.taskDetails.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

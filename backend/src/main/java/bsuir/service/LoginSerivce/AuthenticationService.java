@@ -2,6 +2,6 @@ package bsuir.service.LoginSerivce;
 
 import org.springframework.mobile.device.Device;
 
-public interface LoginService {
+public interface AuthenticationService {
     void detectDevice(Device device);
 }

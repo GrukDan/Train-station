@@ -4,7 +4,6 @@ import { TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions }
 const actionMapping: IActionMapping = {
   mouse: {
     click: (tree, node, $event) => {
-      console.log(node.children)
     }
   }
 };

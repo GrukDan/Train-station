@@ -3,7 +3,7 @@ package bsuir.service.userDetails.Impl;
 import bsuir.model.userDetails.Role;
 import bsuir.repository.userDetails.RoleRepository;
 import bsuir.service.userDetails.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,4 +37,8 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public Role findByRole(String role) throws ChangeSetPersister.NotFoundException {
+        return roleRepository.findByRole(role).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    }
 }

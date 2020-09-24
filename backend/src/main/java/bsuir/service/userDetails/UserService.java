@@ -5,13 +5,16 @@ import bsuir.model.userDetails.User;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     User save(User user);
 
-    void delete(long id);
+    void delete(Long id);
 
-    User getById(long id) throws ChangeSetPersister.NotFoundException;
+    User getById(Long id) throws ChangeSetPersister.NotFoundException;
+
+    User findByEmail(String email) throws ChangeSetPersister.NotFoundException;
 
     User update(User user);
 
@@ -26,4 +29,6 @@ public interface UserService {
     List<User> getAllByTaskId(Long idTask);
 
     List<User> saveAll(List<User> users);
+
+    User findByEmailAndPassword(String username, String password);
 }

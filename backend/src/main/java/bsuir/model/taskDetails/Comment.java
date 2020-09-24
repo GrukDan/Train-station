@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
 @Entity
@@ -23,6 +24,7 @@ public class Comment {
 
     @Basic
     @Column(name = "comment", nullable = false, length = -1)
+    @NotBlank
     private String comment;
 
     @Basic

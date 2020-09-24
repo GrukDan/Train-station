@@ -1,7 +1,10 @@
 package bsuir.model.pageModel;
 
 import bsuir.model.userDetails.User;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +12,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserPage extends Page {
 

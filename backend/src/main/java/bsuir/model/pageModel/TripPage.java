@@ -1,15 +1,16 @@
 package bsuir.model.pageModel;
 
 import bsuir.model.viewModel.TripRecord;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
-import java.util.Objects;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class TripPage extends Page {
 

@@ -3,7 +3,6 @@ package bsuir.service.taskDetails.Impl;
 import bsuir.model.taskDetails.Rating;
 import bsuir.repository.taskDetails.RatingRepository;
 import bsuir.service.taskDetails.RatingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

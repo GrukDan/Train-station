@@ -1,13 +1,14 @@
 package bsuir.model.taskDetails;
 
 import bsuir.model.userDetails.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,10 +35,12 @@ public class Task {
 
     @Basic
     @Column(name = "task_name", nullable = false, length = 45)
+    @NotBlank
     private String taskName;
 
     @Basic
     @Column(name = "task_code", nullable = false, length = 45)
+    @NotBlank
     private String taskCode;
 
     @Basic
@@ -129,10 +132,16 @@ public class Task {
         return users;
     }
 
+    public List<Long> collectUserIds(){
+        return users.stream()
+                .map(User::getIdUser)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Task)) return false;
         Task task = (Task) o;
         return idTask == task.idTask &&
                 taskCreator == task.taskCreator &&
@@ -150,21 +159,15 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "idTask=" + idTask +
-                ", taskCreator=" + taskCreator +
-                ", dateOfCreation=" + dateOfCreation +
-                ", taskName='" + taskName + '\'' +
-                ", taskCode='" + taskCode + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", users=" + users.toString() +
-                '}';
-    }
-
-    public List<Long> collectUserIds(){
-        return users.stream()
-                .map(User::getIdUser)
-                .collect(Collectors.toList());
+        final StringBuilder sb = new StringBuilder("Task{");
+        sb.append("dateOfCreation=").append(dateOfCreation);
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", idTask=").append(idTask);
+        sb.append(", status=").append(status);
+        sb.append(", taskCode='").append(taskCode).append('\'');
+        sb.append(", taskCreator=").append(taskCreator);
+        sb.append(", taskName='").append(taskName).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

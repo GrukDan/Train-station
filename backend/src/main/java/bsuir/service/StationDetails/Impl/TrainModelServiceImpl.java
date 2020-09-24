@@ -3,7 +3,6 @@ package bsuir.service.StationDetails.Impl;
 import bsuir.model.stationDetails.TrainModel;
 import bsuir.repository.stationDetails.TrainModelRepository;
 import bsuir.service.StationDetails.TrainModelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -3,7 +3,6 @@ package bsuir.service.StationDetails.Impl;
 import bsuir.model.stationDetails.City;
 import bsuir.repository.stationDetails.CityRepository;
 import bsuir.service.StationDetails.CityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "train_model", schema = "train_station")
@@ -22,5 +23,6 @@ public class TrainModel {
 
     @Basic
     @Column(name = "model", nullable = false, length = 45)
+    @NotBlank
     private String model;
 }

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
 @Entity
@@ -31,6 +32,7 @@ public class Message {
 
     @Basic
     @Column(name = "message", nullable = false, length = -1)
+    @NotBlank
     private String message;
 
     @Basic

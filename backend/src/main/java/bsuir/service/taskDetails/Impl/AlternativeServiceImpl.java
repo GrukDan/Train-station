@@ -3,7 +3,6 @@ package bsuir.service.taskDetails.Impl;
 import bsuir.model.taskDetails.Alternative;
 import bsuir.repository.taskDetails.AlternativeRepository;
 import bsuir.service.taskDetails.AlternativeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

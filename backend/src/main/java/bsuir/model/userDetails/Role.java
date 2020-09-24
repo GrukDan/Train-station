@@ -1,34 +1,57 @@
 package bsuir.model.userDetails;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "role", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class Role {
+public class Role implements GrantedAuthority {
 
     @Id
     @Column(name = "id_role", nullable = false)
-    @EqualsAndHashCode.Include
     private long idRole;
 
     @Basic
     @Column(name = "role", nullable = false, length = 20)
-    @EqualsAndHashCode.Include
     private String role;
 
     @JsonIgnore
-    @ToString.Exclude
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+        Role role1 = (Role) o;
+        return idRole == role1.idRole &&
+                role.equals(role1.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idRole, role);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Role{");
+        sb.append("idRole=").append(idRole);
+        sb.append(", role='").append(role).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
+    public String getAuthority() {
+        return role;
+    }
 }

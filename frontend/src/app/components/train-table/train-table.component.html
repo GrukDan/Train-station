@@ -537,7 +537,8 @@
                       id="trainForTrip"
                       name="trainModel"
                       formControlName="train"
-                      [(ngModel)]="trip.train">
+                      [(ngModel)]="trip.train"
+                      (click)="selectTrainForTrip($event.target.value)">
                 <option *ngFor="let train of trains"
                         [value]="train.idTrain">№{{train.idTrain}} {{train.dateOfCreation | date}}</option>
               </select>

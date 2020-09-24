@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CarouselConfig} from "ngx-bootstrap/carousel";
+import {AuthService} from "../../services/auth/auth.service";
 
 @Component({
   selector: 'app-welcome-page',
@@ -14,7 +15,7 @@ export class WelcomePageComponent implements OnInit {
   email:string;
   password:string;
 
-  constructor() { }
+  constructor(public authService:AuthService) { }
 
   ngOnInit() {
   }

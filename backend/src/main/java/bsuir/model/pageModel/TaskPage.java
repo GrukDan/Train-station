@@ -1,15 +1,19 @@
 package bsuir.model.pageModel;
 
 import bsuir.model.viewModel.TaskViewModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Objects;
 
+
+//todo: заменть конструктор на builder
 @Getter
 @Setter
 @ToString(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
 public class TaskPage extends Page {
 

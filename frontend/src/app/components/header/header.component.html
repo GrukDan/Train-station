@@ -32,6 +32,11 @@
       </a>
     </div>
   </div>
+  <button *ngIf="!authService.isAuthenticated()"
+          (click)="authService.logOut()"
+          class="btn btn-primary">
+    Log out <i class="fa fa-sign-out"></i>
+  </button>
 </nav>
 
 

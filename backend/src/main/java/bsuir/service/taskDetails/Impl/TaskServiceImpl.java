@@ -5,14 +5,12 @@ import bsuir.model.taskDetails.Status;
 import bsuir.model.taskDetails.Task;
 import bsuir.model.userDetails.User;
 import bsuir.model.viewModel.TaskViewModel;
-import bsuir.passayGenerator.PassayGenerator;
+import bsuir.sequenceGenerator.PassayGenerator;
 import bsuir.repository.taskDetails.TaskRepository;
 import bsuir.service.taskDetails.StatusService;
 import bsuir.service.taskDetails.TaskService;
 import bsuir.service.userDetails.UserService;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,22 +24,22 @@ import java.util.stream.Collectors;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    @Setter(onMethod=@__({@Autowired}))
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final StatusService statusService;
+    private final UserService userService;
+    private final PassayGenerator passayGenerator;
 
-    @Setter(onMethod=@__({@Autowired}))
-    private StatusService statusService;
-
-    @Setter(onMethod=@__({@Autowired}))
-    private UserService userService;
-
-    @Setter(onMethod=@__({@Autowired}))
-    private PassayGenerator passayGenerator;
-
-    private String[] parameters;
+    private final String[] parameters;
 
     {
         parameters = new String[]{"taskName", "taskCode", "status","dateOfCreation", "taskCreator"};
+    }
+
+    public TaskServiceImpl(TaskRepository taskRepository, StatusService statusService, UserService userService, PassayGenerator passayGenerator) {
+        this.taskRepository = taskRepository;
+        this.statusService = statusService;
+        this.userService = userService;
+        this.passayGenerator = passayGenerator;
     }
 
     private void setTaskCode(Task task){
@@ -58,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
         Task savedTask = taskRepository
                 .findByTaskCode(task.getTaskCode())
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
-        Set<Task> tasks = new HashSet<Task>();
+        Set<Task> tasks = new HashSet();
         tasks.add(savedTask);
         users.forEach(user -> {
             user.setTasks(tasks);

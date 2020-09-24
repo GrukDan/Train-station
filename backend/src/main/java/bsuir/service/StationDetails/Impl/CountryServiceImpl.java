@@ -3,9 +3,7 @@ package bsuir.service.StationDetails.Impl;
 import bsuir.model.stationDetails.Country;
 import bsuir.repository.stationDetails.CountryRepository;
 import bsuir.service.StationDetails.CountryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

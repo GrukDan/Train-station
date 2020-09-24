@@ -3,13 +3,11 @@ package bsuir.service.userDetails.Impl;
 import bsuir.model.pageModel.UserPage;
 import bsuir.model.userDetails.Role;
 import bsuir.model.userDetails.User;
-import bsuir.passayGenerator.PassayGenerator;
-import bsuir.repository.userDetails.RoleRepository;
+import bsuir.sequenceGenerator.PassayGenerator;
 import bsuir.repository.userDetails.UserRepository;
-import bsuir.service.userDetails.RoleService;
 import bsuir.service.userDetails.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,34 +16,32 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-    private String[] parameters;
+    private final UserRepository userRepository;
+    private final PassayGenerator passayGenerator;
+//    private final BCryptPasswordEncoder passwordEncoder;
+    private final String[] parameters;
 
     {
         parameters = new String[]{"name", "surname", "email"};
     }
 
-    private final UserRepository userRepository;
-
-    private final RoleService roleService;
-
-    private final PassayGenerator passayGenerator;
-
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PassayGenerator passayGenerator) {
+    public UserServiceImpl(UserRepository userRepository, PassayGenerator passayGenerator) {
         this.userRepository = userRepository;
-        this.roleService = roleService;
         this.passayGenerator = passayGenerator;
+
     }
 
     @Override
     public User save(User user) {
-        user.setPassword(passayGenerator.generatePassword());
+        String password = passayGenerator.generatePassword();
+//        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(password);
         Set<Role> role = user.getRoles();
         user.setRoles(null);
         userRepository.save(user);
@@ -55,12 +51,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public User getById(long id) throws ChangeSetPersister.NotFoundException {
+    public User getById(Long id) throws ChangeSetPersister.NotFoundException {
         return userRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 
@@ -109,5 +105,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> saveAll(List<User> users) {
         return userRepository.saveAll(users);
+    }
+
+    @Override
+    public User findByEmail(String email) throws ChangeSetPersister.NotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    }
+
+    @Override
+    public User findByEmailAndPassword(String username, String password) {
+        return userRepository.findByEmailAndPassword(username,password);
     }
 }
