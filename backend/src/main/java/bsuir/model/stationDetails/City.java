@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "city", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

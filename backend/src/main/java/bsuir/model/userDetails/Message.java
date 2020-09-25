@@ -12,14 +12,12 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "message", schema = "train_station")
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
 
     @Id
     @Column(name = "id_message", nullable = false)
-    @EqualsAndHashCode.Include
     private long idMessage;
 
     @Basic

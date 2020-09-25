@@ -69,9 +69,6 @@
 <div *ngIf="!authService.isAuthenticated()"
   class="Absolute-Center">
       <app-login-card
-        [(email)]="email"
-        [(password)]="password"
-        (change)="login($event)"
         class="justify-content-center">
       </app-login-card>
 </div>

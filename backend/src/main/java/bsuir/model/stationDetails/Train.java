@@ -10,7 +10,6 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "train", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +17,6 @@ public class Train {
 
     @Id
     @Column(name = "id_train", nullable = false)
-    @EqualsAndHashCode.Include
     private long idTrain;
 
     @Basic

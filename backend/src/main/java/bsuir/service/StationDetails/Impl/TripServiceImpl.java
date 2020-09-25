@@ -98,7 +98,14 @@ public class TripServiceImpl implements TripService {
     public TripPage getPage(int page, int size, boolean direction, String parameter) {
         Page<Trip> tripsPage = getPageSorted(page, size, parameter, direction);
         List<TripRecord> tripRecords = buildTripRecords(tripsPage.getContent());
-        return new TripPage(page, size, tripsPage.getTotalElements(), direction, parameter, tripRecords);
+        return TripPage.builder()
+                .page(page)
+                .size(size)
+                .totalElements(tripsPage.getTotalElements())
+                .direction(direction)
+                .parameter(parameter)
+                .tripRecords(tripRecords)
+                .build();
     }
 
     private List<TripRecord> buildTripRecords(List<Trip> trips) {

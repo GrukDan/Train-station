@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "train_model", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +17,6 @@ public class TrainModel {
 
     @Id
     @Column(name = "id_train_model", nullable = false)
-    @EqualsAndHashCode.Include
     private long idTrainModel;
 
     @Basic

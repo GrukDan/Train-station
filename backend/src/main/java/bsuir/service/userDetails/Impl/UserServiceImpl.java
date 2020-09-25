@@ -7,11 +7,12 @@ import bsuir.sequenceGenerator.PassayGenerator;
 import bsuir.repository.userDetails.UserRepository;
 import bsuir.service.userDetails.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -24,24 +25,23 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PassayGenerator passayGenerator;
-//    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final String[] parameters;
 
     {
         parameters = new String[]{"name", "surname", "email"};
     }
 
-    public UserServiceImpl(UserRepository userRepository, PassayGenerator passayGenerator) {
+    public UserServiceImpl(UserRepository userRepository, PassayGenerator passayGenerator, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passayGenerator = passayGenerator;
-
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User save(User user) {
         String password = passayGenerator.generatePassword();
-//        user.setPassword(passwordEncoder.encode(password));
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         Set<Role> role = user.getRoles();
         user.setRoles(null);
         userRepository.save(user);
@@ -76,7 +76,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserPage getPage(int page, int size, boolean direction, String parameter) {
         Page<User> users = getPageSorted(page, size, direction, parameter);
-        return new UserPage(page, size, users.getTotalElements(), direction, parameter, users.getContent());
+        return UserPage.builder()
+                .page(page)
+                .size(size)
+                .totalElements(users.getTotalElements())
+                .direction(direction)
+                .parameter(parameter)
+                .users(users.getContent())
+                .build();
     }
 
     private Page<User> getPageSorted(int page, int size, boolean direction, String parameter) {

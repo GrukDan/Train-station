@@ -19,8 +19,11 @@ import java.util.Date;
 @Log
 public class JwtProvider {
 
-    @Value("$(jwt.secret)")
+    @Value("${jwt.token.secret}")
     private String jwtSecret;
+
+    @Value("${jwt.token.expired}")
+    private long tokenExpired;
 
     public String generateToken(String login) {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());

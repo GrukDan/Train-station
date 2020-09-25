@@ -12,9 +12,7 @@
           id="email"
           name="email"
           formControlName="email"
-          [ngModel]="email"
-          (ngModelChange)="onEmailChange($event)"
-        >
+          [(ngModel)]="jwtRequest.username">
         <div *ngIf="_email.invalid && (_email.touched || _email.dirty)" class="alert alert-danger">
           <p *ngIf="_email.errors?.required">This field is required</p>
           <p *ngIf="_email.errors?.minlength">The min length isn't valid</p>
@@ -30,9 +28,7 @@
           id="password"
           name="password"
           formControlName="password"
-          [ngModel]="password"
-          (ngModelChange)="onPasswordChange($event)"
-        >
+          [(ngModel)]="jwtRequest.password">
         <div *ngIf="_password.invalid && (_password.touched || _password.dirty)" class="alert alert-danger">
           <p *ngIf="_password.errors?.required">This field is required</p>
           <p *ngIf="_password.errors?.minlength">The min length isn't valid</p>
@@ -45,7 +41,7 @@
     <button
       class="btn btn-primary right-button"
       [disabled]="loginForm.invalid"
-      (click)="change(true)">
+      (click)="submit(jwtRequest)">
       Log in
       <i class="fa fa-sign-in"></i>
     </button>

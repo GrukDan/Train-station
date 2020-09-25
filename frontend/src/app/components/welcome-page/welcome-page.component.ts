@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {CarouselConfig} from "ngx-bootstrap/carousel";
 import {AuthService} from "../../services/auth/auth.service";
+import {JwtRequest} from "../../models/auth/jwt-request";
 
 @Component({
   selector: 'app-welcome-page',
@@ -12,15 +13,8 @@ import {AuthService} from "../../services/auth/auth.service";
 })
 export class WelcomePageComponent implements OnInit {
 
-  email:string;
-  password:string;
-
   constructor(public authService:AuthService) { }
 
   ngOnInit() {
-  }
-
-  login(event:Event){
-
   }
 }

@@ -91,7 +91,14 @@ public class TaskServiceImpl implements TaskService {
     public TaskPage getPage(int page, int size, boolean direction, String parameter) {
         Page<Task> tasksPage = getPageSorted(page, size, parameter, direction);
         List<TaskViewModel> taskViewModels = buildPageContent(tasksPage.getContent());
-        return new TaskPage(page, size, tasksPage.getTotalElements(), direction, parameter, taskViewModels);
+        return  TaskPage.builder()
+                .page(page)
+                .size(size)
+                .totalElements(tasksPage.getTotalElements())
+                .direction(direction)
+                .parameter(parameter)
+                .taskViewModels(taskViewModels)
+                .build();
     }
 
     private List<TaskViewModel> buildPageContent(List<Task> tasks) {

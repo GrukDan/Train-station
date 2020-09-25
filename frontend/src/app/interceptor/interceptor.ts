@@ -1,29 +1,24 @@
-// import {Injectable} from "@angular/core";
-// import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-// import {Observable} from "rxjs";
-// import {finalize, tap} from "rxjs/operators";
-//
-// @Injectable()
-// export class LoadingIndicatorInterceptor implements HttpInterceptor {
-//
-//   constructor(public loadingIndicatorService: LoadingIndicatorService) {}
-//
-//   intercept (req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     // emit onStarted event before request execution
-//     this.loadingIndicatorService.onStarted(req);
-//
-//     return next
-//       .handle(req)
-//       // emit onFinished event after request execution
-//       .pipe(
-//         finalize(() => this.loadingIndicatorService.onFinished(req)), tap( r => {
-//         })
-//       );
-//   }
-// }
-//
-// export const LoadingInterceptor = {
-//   provide: HTTP_INTERCEPTORS,
-//   useClass: LoadingIndicatorInterceptor,
-//   multi: true,
-// };
+import {Injectable} from "@angular/core";
+import {HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders} from '@angular/common/http';
+import { Observable } from 'rxjs/internal/Observable';
+import {AuthService} from "../services/auth/auth.service";
+
+
+@Injectable()
+export class TokenInterceptor implements HttpInterceptor {
+
+  constructor(private authService: AuthService) { }
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this.authService.isAuthenticated()) {
+      const authReq = req.clone({
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${window.btoa(this.authService.getToken())}`
+        })
+      });
+      return next.handle(authReq);
+    } else {
+      return next.handle(req);
+    }
+  }
+}

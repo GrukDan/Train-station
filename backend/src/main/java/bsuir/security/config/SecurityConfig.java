@@ -30,16 +30,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/tasks/*").hasRole("ADMIN")
+                .antMatchers("/api/*").hasRole("ADMIN")
                 .antMatchers("/api/tasks/*").hasRole("EXPERT")
+                .antMatchers("/api/tasks/*").hasRole("PROJECT_MANAGER")
                 .antMatchers("/api/users/*").hasRole("PROJECT_MANAGER")
                 .antMatchers("/api/auth/auth").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

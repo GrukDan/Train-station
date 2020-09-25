@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "rating", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +16,6 @@ public class Rating {
 
     @Id
     @Column(name = "id_rating", nullable = false)
-    @EqualsAndHashCode.Include
     private long idRating;
 
     @Basic

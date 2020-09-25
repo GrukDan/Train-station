@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "comment", schema = "train_station")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +18,6 @@ public class Comment {
 
     @Id
     @Column(name = "id_comment", nullable = false)
-    @EqualsAndHashCode.Include
     private long idComment;
 
     @Basic

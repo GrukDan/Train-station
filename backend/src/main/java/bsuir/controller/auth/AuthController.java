@@ -24,7 +24,6 @@ public class AuthController {
 
     @RequestMapping(value = "/auth",method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody JwtRequest request) {
-        log.info(request.getUsername());
         User user = userService.findByEmailAndPassword(request.getUsername(), request.getPassword());
         String token = jwtProvider.generateToken(user.getEmail());
         return ResponseEntity.ok(token);
